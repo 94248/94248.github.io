@@ -4,6 +4,31 @@
   
     
     <entry>
+      <title>burp+xray联动漏扫</title>
+      <link href="/2023/12/01/burp+xray%E8%81%94%E5%8A%A8%E6%BC%8F%E6%89%AB/"/>
+      <url>/2023/12/01/burp+xray%E8%81%94%E5%8A%A8%E6%BC%8F%E6%89%AB/</url>
+      
+        <content type="html"><![CDATA[<h1 id="网上也有很多相关的文章，但还是想记录一下"><a href="#网上也有很多相关的文章，但还是想记录一下" class="headerlink" title="#网上也有很多相关的文章，但还是想记录一下"></a>#网上也有很多相关的文章，但还是想记录一下</h1><h2 id="xray"><a href="#xray" class="headerlink" title="xray"></a>xray</h2><p>xray是长亭科技开发的一款漏洞扫描工具。除了基本的漏洞也可以添加其他的poc。</p><p>xray分为<a href="https://github.com/chaitin/xray">免费版</a>和付费版。至于付费版可以去网上找破解。</p><h3 id="基础使用"><a href="#基础使用" class="headerlink" title="基础使用"></a>基础使用</h3><p>1.使用基础爬虫爬取并对爬虫爬取的链接进行漏洞扫描</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">xray webscan --basic-crawler http://example.com --html-output vuln.html</span><br></pre></td></tr></table></figure><p>2.使用 HTTP 代理进行被动扫描</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">xray webscan --listen 127.0.0.1:7777 --html-output proxy.html</span><br></pre></td></tr></table></figure><p>3.只扫描单个 url，不使用爬虫</p><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">xray webscan --url http://example.com/?a=b --html-output single-url.html</span><br></pre></td></tr></table></figure><h2 id="burp设置"><a href="#burp设置" class="headerlink" title="burp设置"></a>burp设置</h2><p><img src="https://xdm-blog.oss-cn-beijing.aliyuncs.com/202312021632873.png"></p><p><img src="https://xdm-blog.oss-cn-beijing.aliyuncs.com/202312021630313.png"></p><p>不能和浏览器代理端口相同</p><p><img src="https://xdm-blog.oss-cn-beijing.aliyuncs.com/202312021658843.png"></p><p><img src="https://xdm-blog.oss-cn-beijing.aliyuncs.com/202312021702003.png"></p><h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><p>先把如上配置配置好后。使用xray开启本地监听。在访问网页后会进行自动爬取漏洞扫描</p><p><img src="https://xdm-blog.oss-cn-beijing.aliyuncs.com/202312021707017.png"></p><h2 id="ps"><a href="#ps" class="headerlink" title="ps:"></a>ps:</h2><p>要扫描https网站要安装CA证书</p><p>xray:  运行 xray genca </p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 工具 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 工具 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>FFUF工具</title>
       <link href="/2023/11/13/FFUF%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/"/>
       <url>/2023/11/13/FFUF%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/</url>
