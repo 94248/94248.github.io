@@ -1,3 +1,4 @@
+https://94248.github.io/2024/04/13/xss-labs%E9%80%9A%E5%85%B3/
 https://94248.github.io/2024/03/09/sqli-labs%E9%9D%B6%E5%9C%BA/
 https://94248.github.io/2024/01/31/%E2%80%9C%E9%9D%B6%E6%9C%BA-CozyHosting%E2%80%9D/
 https://94248.github.io/2024/01/13/msfMetasploit%E4%BD%BF%E7%94%A8/
